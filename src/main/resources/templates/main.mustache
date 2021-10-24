@@ -1,0 +1,37 @@
+<html lang="eng">
+<body>
+<div>
+    <form action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+<div>{{current}}</div>
+<input type="hidden" name="_csrf" value="{{_csrf.token}}">
+<a href="/profile">Profile</a>
+<input type="hidden" name="_csrf" value="{{_csrf.token}}">
+<a href="/lots">Lots</a>
+<div>Add new Item</div>
+<div>
+    <form method="post" name="item">
+        <div><label><input type="text" name="name" placeholder="Enter Item's name"></label></div>
+        <div><label><input type="text" name="description" placeholder="Enter Item's description"></label></div>
+        <div><label><input type="number" name="price" step="0.01" placeholder="Enter Item's cost"></label></div>
+        <div><label><input type="number" name="quantity" placeholder="Enter Item's quantity"></label></div>
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        <button type="submit">Add Item</button>
+    </form>
+</div>
+<div>List of all {{current}}'s Items</div>
+{{#items}}
+    <div>
+        <d>{{id}}</d>
+        <span>{{name}}</span>
+        <span>{{description}}</span>
+        <i>{{price}}</i>
+        <i>{{quantity}}</i>
+        <i>{{user.username}}'s</i>
+    </div>
+{{/items}}
+</body>
+</html>

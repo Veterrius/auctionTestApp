@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lots</title>
+    <style>
+        #lot {
+            border: 3px solid black;
+            border-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    LOTS:<br>
+    {{#lots}}
+        <div id="lot">
+            <span id="{{id}}">{{id}}</span>
+            <span>{{time}}</span>
+            <span>{{price}}</span>
+            <span>{{item.name}}</span>
+            <span>{{item.quantity}}</span>
+            <span>{{seller.username}}</span>
+            <div class="button">Button</div>
+        </div>
+    {{/lots}}
+</div>
+<div>
+    <form method="post">
+        <label><input type="number" name="id" placeholder="Enter item's id"></label>
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        <div><input type="submit" value="Create Lot"/></div>
+    </form>
+</div>
+<div>
+    <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+    <a href="/main">Back</a>
+</div>
+<script>
+    let list = document.getElementsByClassName("button");
+    for (let i = 0; i < list.length; i++) {
+        list[i].addEventListener("click", function () {
+            let id = list[i].parentElement.children[0].id;
+            window.location.replace("/verification?id="+id);
+        })
+    }
+</script>
+</body>
+</html>

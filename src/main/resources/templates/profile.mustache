@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+<body>
+<div>Name: {{user.username}}</div>
+<div>Current money: {{user.money}}</div>
+<div>Add Money</div>
+<div>
+    <form method="post">
+        <div><label><input type="number" step="0.01" name="money" placeholder="Enter Money"></label></div>
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        <input type="submit" value="Add">
+    </form>
+</div>
+<input type="hidden" name="_csrf" value="{{_csrf.token}}">
+<a href="/main">Back</a>
+</body>
+</html>
