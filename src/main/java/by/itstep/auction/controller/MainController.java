@@ -16,11 +16,14 @@ import java.util.Map;
 @Controller
 public class MainController {
 
-    @Autowired
-    private ItemService itemService;
+    private final ItemService itemService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public MainController(ItemService itemService, UserService userService) {
+        this.itemService = itemService;
+        this.userService = userService;
+    }
 
     @GetMapping("/main")
     public String main(Map<String, Object> model, Principal principal) {

@@ -18,14 +18,17 @@ import java.util.Collections;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private LotRepository lotRepository;
+    private final LotRepository lotRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
+
+    public UserService(UserRepository userRepository, LotRepository lotRepository, ItemRepository itemRepository) {
+        this.userRepository = userRepository;
+        this.lotRepository = lotRepository;
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -65,10 +68,10 @@ public class UserService implements UserDetailsService {
                     updateMoney(customer, lot.getPrice(), false);
                     updateMoney(seller, lot.getPrice(), true);
                     itemToBuy.setUser(customer);
+                    lotRepository.delete(lot);
                 }
             }
         }
-        lotRepository.delete(lot);
         return customer;
     }
 }

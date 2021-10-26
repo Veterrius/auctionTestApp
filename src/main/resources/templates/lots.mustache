@@ -8,6 +8,13 @@
             border: 3px solid black;
             border-spacing: 2px;
         }
+        #buy {
+            border: 1px solid black;
+            background-color: darkgrey;
+            text-align: center;
+            width: 40px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -21,7 +28,7 @@
             <span>{{item.name}}</span>
             <span>{{item.quantity}}</span>
             <span>{{seller.username}}</span>
-            <div class="button">Button</div>
+            <div class="button" id="buy">Buy</div>
         </div>
     {{/lots}}
 </div>

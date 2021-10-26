@@ -15,11 +15,14 @@ import java.util.Map;
 @Controller
 public class LotController {
 
-    @Autowired
-    private LotService lotService;
+    private final LotService lotService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public LotController(LotService lotService, UserService userService) {
+        this.lotService = lotService;
+        this.userService = userService;
+    }
 
     @GetMapping(value = "/lots")
     public String main(Map<String, Object> model) {

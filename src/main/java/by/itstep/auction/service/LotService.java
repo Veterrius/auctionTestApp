@@ -13,11 +13,14 @@ import java.time.LocalDateTime;
 @Service
 public class LotService {
 
-    @Autowired
-    private LotRepository lotRepository;
+    private final LotRepository lotRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
+
+    public LotService(LotRepository lotRepository, ItemRepository itemRepository) {
+        this.lotRepository = lotRepository;
+        this.itemRepository = itemRepository;
+    }
 
     public Lot findLotBySeller(User user) {
         return lotRepository.findLotBySeller(user);

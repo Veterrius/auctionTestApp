@@ -16,11 +16,14 @@ import java.util.Map;
 @Controller
 public class VerificationController {
 
-    @Autowired
-    private LotService lotService;
+    private final LotService lotService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public VerificationController(LotService lotService, UserService userService) {
+        this.lotService = lotService;
+        this.userService = userService;
+    }
 
     @GetMapping(value = "/verification")
     public String main(@RequestParam Long id, Map<String, Object> model, Principal principal) {

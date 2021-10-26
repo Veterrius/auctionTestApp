@@ -14,8 +14,11 @@ import java.util.Map;
 @Controller
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping(value = "/profile")
     public String main(Map<String, Object> model, Principal principal) {

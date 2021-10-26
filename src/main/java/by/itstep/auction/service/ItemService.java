@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ItemService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
+
+    public ItemService(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
 
     public Item findItemByName(String name) {
         return itemRepository.findItemByName(name);
