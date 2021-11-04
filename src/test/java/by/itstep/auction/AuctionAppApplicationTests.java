@@ -9,5 +9,4 @@ class AuctionAppApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

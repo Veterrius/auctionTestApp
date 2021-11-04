@@ -15,14 +15,14 @@ public class Lot {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private Double price;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User seller;
 
-    @Column(name = "time")
+    @Column(name = "time", nullable = false)
     private LocalDateTime time;
 
     public Item getItem() {

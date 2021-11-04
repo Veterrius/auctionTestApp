@@ -36,6 +36,15 @@ public class MainController {
     @PostMapping(value = "/main")
     public String add(Item item, Map<String, Object> model, Principal principal) {
         User user = userService.findUserByName(principal.getName());
+
+//        if (item.getPrice() == null | item.getQuantity() == null) {
+//            model.put("message", "Enter price and quantity of your item");
+//            Iterable<Item> items = itemService.findItemsOfUser(user);
+//            model.put("items", items);
+//            model.put("current", principal.getName());
+//            return "main";
+//        }
+
         itemService.createItem(item, user);
         Iterable<Item> items = itemService.findItemsOfUser(user);
         model.put("items", items);

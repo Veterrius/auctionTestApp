@@ -33,11 +33,27 @@
     {{/lots}}
 </div>
 <div>
-    <form method="post">
-        <label><input type="number" name="id" placeholder="Enter item's id"></label>
+    <form method="post" action="/lots/create">
+        <label><input type="number" name="id" placeholder="Enter item's id" required="required"></label>
         <input type="hidden" name="_csrf" value="{{_csrf.token}}">
-        <div><input type="submit" value="Create Lot"/></div>
+        <div><input type="submit" value="Create Lot"></div>
     </form>
+    <div>
+        {{#message}}
+            {{.}}
+        {{/message}}
+    </div>
+</div>
+<div>Your Items:
+    {{#items}}
+        <div>
+            <d>{{id}}</d>
+            <span>{{name}}</span>
+            <span>{{description}}</span>
+            <span>{{#price}}{{.}}{{/price}}</span>
+            <span>{{#quantity}}{{.}}{{/quantity}}</span>
+        </div>
+    {{/items}}
 </div>
 <div>
     <input type="hidden" name="_csrf" value="{{_csrf.token}}">

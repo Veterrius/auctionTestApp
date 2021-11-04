@@ -5,6 +5,7 @@ import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
+import by.itstep.auction.service.exceptions.InvalidItemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,15 +39,17 @@ public class LotService {
         return lotRepository.findAll();
     }
 
-    public Lot createLotByItemId(Long itemId, User user) {
+    public void createLotByItemId(Long itemId, User user) {
        Item itemFromDb = itemRepository.findItemById(itemId);
        Lot lot = new Lot();
         if (itemFromDb != null) {
-            lot.setItem(itemFromDb);
-            lot.setSeller(user);
-            lot.setPrice(itemFromDb.getPrice()*itemFromDb.getQuantity());
-            lot.setTime(LocalDateTime.now());
-        }
-        return lotRepository.save(lot);
+            if (itemFromDb.getUser()==user) {
+                lot.setItem(itemFromDb);
+                lot.setSeller(user);
+                lot.setPrice(itemFromDb.getPrice()*itemFromDb.getQuantity());
+                lot.setTime(LocalDateTime.now());
+                lotRepository.save(lot);
+            } else throw new InvalidItemException("You have selected invalid item");
+        } else throw new InvalidItemException("No such item");
     }
 }

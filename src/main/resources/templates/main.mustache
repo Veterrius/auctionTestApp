@@ -13,10 +13,13 @@
 <a href="/lots">Lots</a>
 <div>Add new Item</div>
 <div>
+    {{#message}}
+        {{message}}
+    {{/message}}
     <form method="post" name="item">
-        <div><label><input type="text" name="name" placeholder="Enter Item's name"></label></div>
+        <div><label><input type="text" name="name" placeholder="Enter Item's name" required="required"></label></div>
         <div><label><input type="text" name="description" placeholder="Enter Item's description"></label></div>
-        <div><label><input type="number" name="price" step="0.01" placeholder="Enter Item's cost"></label></div>
+        <div><label><input type="number" name="price" step="0.01" placeholder="Enter Item's cost" required="required"></label></div>
         <div><label><input type="number" name="quantity" placeholder="Enter Item's quantity"></label></div>
         <input type="hidden" name="_csrf" value="{{_csrf.token}}">
         <button type="submit">Add Item</button>
@@ -28,9 +31,9 @@
         <d>{{id}}</d>
         <span>{{name}}</span>
         <span>{{description}}</span>
-        <i>{{price}}</i>
-        <i>{{quantity}}</i>
-        <i>{{user.username}}'s</i>
+        <span>{{#price}}{{.}}{{/price}}</span>
+        <span>{{#quantity}}{{.}}{{/quantity}}</span>
+        <span>{{user.username}}'s</span>
     </div>
 {{/items}}
 </body>

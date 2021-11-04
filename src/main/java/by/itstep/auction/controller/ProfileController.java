@@ -12,11 +12,11 @@ import java.security.Principal;
 import java.util.Map;
 
 @Controller
-public class UserController {
+public class ProfileController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public ProfileController(UserService userService) {
         this.userService = userService;
     }
 

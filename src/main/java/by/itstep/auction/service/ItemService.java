@@ -20,6 +20,9 @@ public class ItemService {
     }
 
     public Item createItem(Item item, User user) {
+        if (item.getQuantity() == null) {
+            item.setQuantity(1);
+        }
         item.setUser(user);
         return itemRepository.save(item);
     }
