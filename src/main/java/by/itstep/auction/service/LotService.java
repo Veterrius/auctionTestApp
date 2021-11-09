@@ -6,7 +6,6 @@ import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
 import by.itstep.auction.service.exceptions.InvalidItemException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,6 +32,11 @@ public class LotService {
 
     public Lot createLot(Lot lot) {
         return lotRepository.save(lot);
+    }
+
+    public void deleteLotById(Long id) {
+        Lot lotToDelete = lotRepository.findLotById(id);
+        lotRepository.delete(lotToDelete);
     }
 
     public Iterable<Lot> findAllLots() {

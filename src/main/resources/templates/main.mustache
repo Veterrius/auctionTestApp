@@ -6,11 +6,11 @@
         <input type="submit" value="Sign Out"/>
     </form>
 </div>
-<div>{{current}}</div>
+<div>{{current.username}}</div>
 <input type="hidden" name="_csrf" value="{{_csrf.token}}">
 <a href="/profile">Profile</a>
 <input type="hidden" name="_csrf" value="{{_csrf.token}}">
-<a href="/lots">Lots</a>
+<a href="/lots/{{current.id}}">Lots</a>
 <div>Add new Item</div>
 <div>
     {{#message}}
@@ -25,7 +25,7 @@
         <button type="submit">Add Item</button>
     </form>
 </div>
-<div>List of all {{current}}'s Items</div>
+<div>List of all {{current.username}}'s Items</div>
 {{#items}}
     <div>
         <d>{{id}}</d>

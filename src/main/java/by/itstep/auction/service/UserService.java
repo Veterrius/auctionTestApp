@@ -7,7 +7,6 @@ import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
 import by.itstep.auction.dao.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

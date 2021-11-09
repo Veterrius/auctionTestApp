@@ -3,7 +3,6 @@ package by.itstep.auction.service;
 import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.repository.ItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

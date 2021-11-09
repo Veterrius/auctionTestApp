@@ -28,13 +28,14 @@
             <span>{{item.name}}</span>
             <span>{{item.quantity}}</span>
             <span>{{seller.username}}</span>
+            <span hidden="hidden" id="{{seller.id}}"></span>
             <div class="button" id="buy">Buy</div>
         </div>
     {{/lots}}
 </div>
 <div>
     <form method="post" action="/lots/create">
-        <label><input type="number" name="id" placeholder="Enter item's id" required="required"></label>
+        <label><input type="number" name="itemId" placeholder="Enter item's id" required="required"></label>
         <input type="hidden" name="_csrf" value="{{_csrf.token}}">
         <div><input type="submit" value="Create Lot"></div>
     </form>
@@ -61,11 +62,23 @@
 </div>
 <script>
     let list = document.getElementsByClassName("button");
-    for (let i = 0; i < list.length; i++) {
-        list[i].addEventListener("click", function () {
-            let id = list[i].parentElement.children[0].id;
-            window.location.replace("/verification?id="+id);
-        })
+    let sellerId = list[0].parentElement.children[6].id;
+    let userId = window.location.pathname.split('/')[2];
+    if (sellerId === userId) {
+        for (let i = 0; i < list.length; i++) {
+            list[i].innerHTML = "Delete";
+            list[i].addEventListener("click", function () {
+                let lotId = list[i].parentElement.children[0].id;
+                window.location.replace("/lots/delete/"+lotId)
+            })
+        }
+    } else {
+        for (let i = 0; i < list.length; i++) {
+            list[i].addEventListener("click", function () {
+                let lotId = list[i].parentElement.children[0].id;
+                window.location.replace("/verification?id="+lotId);
+            })
+        }
     }
 </script>
 </body>
