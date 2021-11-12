@@ -8,6 +8,7 @@
             border: 3px solid black;
             border-spacing: 2px;
         }
+
         #buy {
             border: 1px solid black;
             background-color: darkgrey;
@@ -62,21 +63,19 @@
 </div>
 <script>
     let list = document.getElementsByClassName("button");
-    let sellerId = list[0].parentElement.children[6].id;
     let userId = window.location.pathname.split('/')[2];
-    if (sellerId === userId) {
-        for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
+        let sellerId = list[i].parentElement.children[6].id;
+        if (userId === sellerId) {
             list[i].innerHTML = "Delete";
             list[i].addEventListener("click", function () {
                 let lotId = list[i].parentElement.children[0].id;
-                window.location.replace("/lots/delete/"+lotId)
+                window.location.replace("/lots/delete/" + lotId)
             })
-        }
-    } else {
-        for (let i = 0; i < list.length; i++) {
+        } else {
             list[i].addEventListener("click", function () {
                 let lotId = list[i].parentElement.children[0].id;
-                window.location.replace("/verification?id="+lotId);
+                window.location.replace("/verification?id=" + lotId);
             })
         }
     }

@@ -46,7 +46,7 @@ public class MainController {
         itemService.createItem(item, user);
         Iterable<Item> items = itemService.findItemsOfUser(user);
         model.put("items", items);
-        model.put("current", principal.getName());
+        model.put("current", userService.findUserByName(principal.getName()));
         return "main";
     }
 }
