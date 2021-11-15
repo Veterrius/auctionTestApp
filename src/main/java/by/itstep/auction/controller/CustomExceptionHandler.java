@@ -4,6 +4,7 @@ import by.itstep.auction.service.ItemService;
 import by.itstep.auction.service.LotService;
 import by.itstep.auction.service.UserService;
 import by.itstep.auction.service.exceptions.InvalidItemException;
+import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -35,6 +36,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidItemException.class)
     public String handleInvalidItemException(InvalidItemException ex, Principal principal) {
+        Long currentId = userService.findUserByName(principal.getName()).getId();
+        return "redirect:/lots/"+currentId;
+    }
+
+    @ExceptionHandler(NotEnoughMoneyException.class)
+    public String handleNotEnoughMoneyException(NotEnoughMoneyException ex, Principal principal) {
         Long currentId = userService.findUserByName(principal.getName()).getId();
         return "redirect:/lots/"+currentId;
     }

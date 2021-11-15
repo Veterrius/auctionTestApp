@@ -7,6 +7,7 @@ import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
 import by.itstep.auction.dao.repository.UserRepository;
+import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -70,7 +71,7 @@ public class UserService implements UserDetailsService {
                     lotRepository.delete(lot);
                 }
             }
-        }
+        } else throw new NotEnoughMoneyException("You have not enough money");
         return customer;
     }
 }

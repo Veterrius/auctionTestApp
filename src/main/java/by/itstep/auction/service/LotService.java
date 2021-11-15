@@ -50,7 +50,7 @@ public class LotService {
             if (itemFromDb.getUser()==user) {
                 lot.setItem(itemFromDb);
                 lot.setSeller(user);
-                lot.setPrice(itemFromDb.getPrice()*itemFromDb.getQuantity());
+                lot.setPrice(itemFromDb.getPrice());
                 lot.setTime(LocalDateTime.now());
                 lotRepository.save(lot);
             } else throw new InvalidItemException("You have selected invalid item");

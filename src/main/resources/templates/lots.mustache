@@ -27,7 +27,6 @@
             <span>{{time}}</span>
             <span>{{price}}</span>
             <span>{{item.name}}</span>
-            <span>{{item.quantity}}</span>
             <span>{{seller.username}}</span>
             <span hidden="hidden" id="{{seller.id}}"></span>
             <div class="button" id="buy">Buy</div>
@@ -53,7 +52,6 @@
             <span>{{name}}</span>
             <span>{{description}}</span>
             <span>{{#price}}{{.}}{{/price}}</span>
-            <span>{{#quantity}}{{.}}{{/quantity}}</span>
         </div>
     {{/items}}
 </div>
@@ -65,7 +63,7 @@
     let list = document.getElementsByClassName("button");
     let userId = window.location.pathname.split('/')[2];
     for (let i = 0; i < list.length; i++) {
-        let sellerId = list[i].parentElement.children[6].id;
+        let sellerId = list[i].parentElement.children[5].id;
         if (userId === sellerId) {
             list[i].innerHTML = "Delete";
             list[i].addEventListener("click", function () {

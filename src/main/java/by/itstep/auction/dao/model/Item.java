@@ -20,9 +20,6 @@ public class Item {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -59,14 +56,6 @@ public class Item {
         this.price = price;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
     public User getUser() {
         return user;
     }
@@ -82,7 +71,6 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", quantity=" + quantity +
                 ", user=" + user +
                 '}';
     }
