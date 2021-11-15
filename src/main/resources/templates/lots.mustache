@@ -29,6 +29,7 @@
             <span>{{item.name}}</span>
             <span>{{seller.username}}</span>
             <span hidden="hidden" id="{{seller.id}}"></span>
+            <input type="hidden" name="_csrf" value="{{_csrf.token}}">
             <div class="button" id="buy">Buy</div>
         </div>
     {{/lots}}
