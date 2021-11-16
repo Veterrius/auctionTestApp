@@ -6,6 +6,7 @@ import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
 import by.itstep.auction.service.exceptions.InvalidItemException;
+import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,6 +44,15 @@ public class LotService {
         return lotRepository.findAll();
     }
 
+    public void validateLot(Lot lot) {
+        Iterable<Lot> allLots = findAllLots();
+        for (Lot lotFromDb : allLots) {
+            if (lotFromDb.getItem().equals(lot.getItem())) {
+                throw new LotAlreadyExistsException("Lot already exists!");
+            }
+        }
+    }
+
     public void createLotByItemId(Long itemId, User user) {
        Item itemFromDb = itemRepository.findItemById(itemId);
        Lot lot = new Lot();
@@ -52,8 +62,9 @@ public class LotService {
                 lot.setSeller(user);
                 lot.setPrice(itemFromDb.getPrice());
                 lot.setTime(LocalDateTime.now());
+                validateLot(lot);
                 lotRepository.save(lot);
             } else throw new InvalidItemException("You have selected invalid item");
-        } else throw new InvalidItemException("No such item");
+        } else throw new InvalidItemException("You have selected invalid item");
     }
 }
