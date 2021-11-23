@@ -3,20 +3,20 @@ package by.itstep.auction.service;
 import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.User;
-import by.itstep.auction.dao.model.enums.Role;
+//import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
 import by.itstep.auction.dao.repository.UserRepository;
 import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {//implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -30,10 +30,10 @@ public class UserService implements UserDetailsService {
         this.itemRepository = itemRepository;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        return userRepository.findByUsername(username);
+//    }
 
     public User findUserByName(String username) {
         return userRepository.findByUsername(username);
@@ -42,7 +42,7 @@ public class UserService implements UserDetailsService {
     public User createUser(User user) {
         user.setMoney(0.0);
         user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
+//        user.setRoles(Collections.singleton(Role.USER));
         return userRepository.save(user);
     }
 
