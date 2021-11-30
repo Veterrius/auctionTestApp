@@ -30,4 +30,23 @@ public class ItemService {
     public Iterable<Item> findItemsOfUser(User user) {
         return itemRepository.findItemsByUser(user);
     }
+
+    public Iterable<Item> getAll() {
+        return itemRepository.findAll();
+    }
+
+    public Item findItemById(Long id) {
+       return itemRepository.findItemById(id);
+    }
+
+    public Item createItemWithoutUser(Item item) {
+        return itemRepository.save(item);
+    }
+
+    public Item updateItem(Item itemToUpdate, Item updatedItem) {
+        itemToUpdate.setDescription(updatedItem.getDescription());
+        itemToUpdate.setPrice(updatedItem.getPrice());
+        itemToUpdate.setName(updatedItem.getName());
+        return itemRepository.save(itemToUpdate);
+    }
 }

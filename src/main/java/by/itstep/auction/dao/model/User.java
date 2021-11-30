@@ -119,15 +119,6 @@ public class User {//implements UserDetails {
 //    public void setRoles(Set<Role> roles) {
 //        this.roles = roles;
 //    }
-
-    public Set<Item> getItem() {
-        return item;
-    }
-
-    public void setItem(Set<Item> item) {
-        this.item = item;
-    }
-
 }
 
 
