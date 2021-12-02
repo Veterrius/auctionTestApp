@@ -49,4 +49,8 @@ public class ItemService {
         itemToUpdate.setName(updatedItem.getName());
         return itemRepository.save(itemToUpdate);
     }
+
+    public void delete(Item item) {
+        itemRepository.delete(item);
+    }
 }

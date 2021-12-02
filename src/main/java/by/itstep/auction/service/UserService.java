@@ -36,12 +36,11 @@ public class UserService {//implements UserDetailsService {
 //    }
 
     public User findUserByName(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByName(username);
     }
 
     public User createUser(User user) {
         user.setMoney(0.0);
-        user.setActive(true);
 //        user.setRoles(Collections.singleton(Role.USER));
         return userRepository.save(user);
     }

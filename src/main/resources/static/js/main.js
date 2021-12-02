@@ -20,11 +20,11 @@ Vue.component("item-form", {
         }
     },
     watch: {
-        itemAttr: function(newVal, oldVal) {
+        itemAttr: function (newVal) {
+            this.id = newVal.id;
             this.name = newVal.name;
             this.description = newVal.description;
             this.price = newVal.price;
-            this.id = newVal.id;
         }
     },
     template: '<div>' +
@@ -43,14 +43,18 @@ Vue.component("item-form", {
             if (this.id) {
                 itemApi.update({id: this.id}, item).then(result => result.json().then(
                     data => {
-                        let index = getIndex(this.items, data.id);
+                        let index = getIndex(this.items, this.id);
                         this.items.splice(index, 1, data);
+                        this.name = '';
+                        this.description = '';
+                        this.price = '';
                     }
-                ));
+                ))
             } else {
                 itemApi.save({}, item).then(result => result.json().then(
                     data => {
                         this.items.push(data);
+                        this.id = '';
                         this.name = '';
                         this.description = '';
                         this.price = '';
@@ -62,30 +66,39 @@ Vue.component("item-form", {
 });
 
 Vue.component("item-row", {
-    props: ['item', 'editItem'],
+    props: ['item', 'editMethod', 'items'],
     template: '<div>' +
         '<i>({{item.id}})</i> {{item.name}} {{item.price}}' +
-        '<span>'+
-          '<input type="button" value="Edit" @click="edit"/>'+
-        '</span>'+
+        '<span style="position: absolute; right: 0">' +
+        '<input type="button" value="Edit" @click="edit"/>' +
+        '<input type="button" value="x" @click="del"/>' +
+        '</span>' +
         '</div>',
     methods: {
         edit: function () {
-            this.editItem(this.item)
+            this.editMethod(this.item)
+        },
+        del: function () {
+            itemApi.remove({id: this.item.id}).then(result => {
+                    if (result.ok) {
+                        this.items.splice(this.items.indexOf(this.item), 1);
+                    }
+                }
+            )
         }
     }
 });
 
 Vue.component('items-list', {
-    props: ['items', 'itemAttr'],
-    data: function() {
+    props: ['items'],
+    data: function () {
         return {
-            item: null
+            itemAttr: null
         }
     },
-    template: "<div>" +
+    template: "<div style='position: relative; width: 300px'>" +
         "<item-form :items='items' :itemAttr='itemAttr'/>" +
-        "<item-row v-for='item in items' :key='item.id' :item='item' :editItem='editItem'/>" +
+        "<item-row v-for='item in items' :key='item.id' :items='items' :item='item' :editMethod='editMethod'/>" +
         "</div>",
     created: function () {
         itemApi.get().then(result =>
@@ -94,8 +107,8 @@ Vue.component('items-list', {
             ))
     },
     methods: {
-        editItem: function(item) {
-            this.item = item;
+        editMethod: function (item) {
+            this.itemAttr = item;
         }
     }
 });

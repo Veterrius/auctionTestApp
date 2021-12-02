@@ -5,39 +5,31 @@ package by.itstep.auction.dao.model;
 //import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 
 @Table(name = "user")
 @Entity
-public class User {//implements UserDetails {
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "username", nullable = false)
-    private String username;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "email", nullable = false)
+    private String name;
+    private String userpic;
     private String email;
-
-    @Column(name = "money")
+    private String gender;
+    private String locale;
+    private LocalDateTime lastVisit;
     private Double money;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Item> item;
+    public Double getMoney() {
+        return money;
+    }
 
-    @Column(name = "active")
-    private boolean active;
-
-//    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-//    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-//    @Enumerated(EnumType.STRING)
-//    private Set<Role> roles;
+    public void setMoney(Double money) {
+        this.money = money;
+    }
 
     public Long getId() {
         return id;
@@ -47,45 +39,20 @@ public class User {//implements UserDetails {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-
-//    @Override
-//    public boolean isEnabled() {
-//        return isActive();
-//    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return getRoles();
-//    }
-
-    public String getPassword() {
-        return password;
+    public String getUserpic() {
+        return userpic;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserpic(String userpic) {
+        this.userpic = userpic;
     }
 
     public String getEmail() {
@@ -96,29 +63,29 @@ public class User {//implements UserDetails {
         this.email = email;
     }
 
-    public Double getMoney() {
-        return money;
+    public String getGender() {
+        return gender;
     }
 
-    public void setMoney(Double money) {
-        this.money = money;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getLocale() {
+        return locale;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
-//    public Set<Role> getRoles() {
-//        return roles;
-//    }
-//
-//    public void setRoles(Set<Role> roles) {
-//        this.roles = roles;
-//    }
+    public LocalDateTime getLastVisit() {
+        return lastVisit;
+    }
+
+    public void setLastVisit(LocalDateTime lastVisit) {
+        this.lastVisit = lastVisit;
+    }
 }
 
 

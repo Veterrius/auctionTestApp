@@ -1,7 +1,6 @@
 package by.itstep.auction.controller.restController;
 
 import by.itstep.auction.dao.model.Item;
-import by.itstep.auction.dao.model.User;
 import by.itstep.auction.service.ItemService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +29,13 @@ public class RestItemController {
         return itemService.createItemWithoutUser(item);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public Item update(@RequestBody Item item) {
-        Item itemFromDb = itemService.findItemById(item.getId());
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public Item update(@PathVariable("id") Item itemFromDb, @RequestBody Item item) {
         return itemService.updateItem(itemFromDb, item);
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") Item item) {
+        itemService.delete(item);
     }
 }
