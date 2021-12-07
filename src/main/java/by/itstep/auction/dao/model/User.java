@@ -4,6 +4,8 @@ package by.itstep.auction.dao.model;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -14,7 +16,9 @@ import java.util.Set;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String googleId;
     private String name;
     private String userpic;
     private String email;
@@ -22,6 +26,14 @@ public class User {
     private String locale;
     private LocalDateTime lastVisit;
     private Double money;
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
 
     public Double getMoney() {
         return money;

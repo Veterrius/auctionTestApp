@@ -14,6 +14,7 @@ import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserService {//implements UserDetailsService {
@@ -41,6 +42,7 @@ public class UserService {//implements UserDetailsService {
 
     public User createUser(User user) {
         user.setMoney(0.0);
+        user.setId(user.getId());
 //        user.setRoles(Collections.singleton(Role.USER));
         return userRepository.save(user);
     }
@@ -72,5 +74,13 @@ public class UserService {//implements UserDetailsService {
             }
         } else throw new NotEnoughMoneyException("You have not enough money");
         return customer;
+    }
+
+    public Optional<User> findById(String id) {
+        return userRepository.findById(id);
+    }
+
+    public Optional<User> findByGoogleId(String googleId) {
+        return userRepository.findByGoogleId(googleId);
     }
 }

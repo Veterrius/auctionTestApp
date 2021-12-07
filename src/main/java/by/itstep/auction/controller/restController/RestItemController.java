@@ -1,7 +1,9 @@
 package by.itstep.auction.controller.restController;
 
 import by.itstep.auction.dao.model.Item;
+import by.itstep.auction.dao.model.User;
 import by.itstep.auction.service.ItemService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,8 +27,8 @@ public class RestItemController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Item createUser(@RequestBody Item item) {
-        return itemService.createItemWithoutUser(item);
+    public Item createUser(@RequestBody Item item, @AuthenticationPrincipal User user) {
+        return itemService.createItem(item, user);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)

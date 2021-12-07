@@ -3,7 +3,9 @@ package by.itstep.auction.dao.repository;
 import by.itstep.auction.dao.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, String> {
     User findByName(String name);
-    User findUserById(Long id);
+    Optional<User> findByGoogleId(String googleId);
 }

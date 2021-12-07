@@ -29,21 +29,22 @@ public class LotServiceTest {
         Long id = 2L;
         lotRepository.findLotById(id);
     }
-
-    @Test
-    public void createLotByItemIdTest_Success() {
-        Long itemId = 4L;
-        User user = new User();
-        Item itemFromDb = itemRepository.findItemById(itemId);
-        Lot lot = new Lot();
-        if (itemFromDb != null) {
-            if (itemFromDb.getUser() == user) {
-                lot.setItem(itemFromDb);
-                lot.setSeller(user);
-                lot.setPrice(itemFromDb.getPrice());
-                lot.setTime(LocalDateTime.now());
-                lotRepository.save(lot);
-            }
-        }
-    }
 }
+
+//    @Test
+//    public void createLotByItemIdTest_Success() {
+//        Long itemId = 4L;
+//        User user = new User();
+//        Item itemFromDb = itemRepository.findItemById(itemId);
+//        Lot lot = new Lot();
+//        if (itemFromDb != null) {
+//            if (itemFromDb.getUser() == user) {
+//                lot.setItem(itemFromDb);
+//                lot.setSeller(user);
+//                lot.setPrice(itemFromDb.getPrice());
+//                lot.setTime(LocalDateTime.now());
+//                lotRepository.save(lot);
+//            }
+//        }
+//    }
+//}

@@ -10,19 +10,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Configuration
 @EnableWebSecurity
 @EnableOAuth2Sso
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
+//TODO Spring Session
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .antMatcher("/**")
                 .authorizeRequests()
-                .mvcMatchers("/").permitAll()
+                .antMatchers("/", "/login**","/js/**", "/error**").permitAll()
                 .anyRequest().authenticated()
+                .and().logout().logoutSuccessUrl("/").permitAll()
                 .and()
                 .csrf().disable();
     }
@@ -30,7 +33,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PrincipalExtractor principalExtractor(UserService userService) {
         return map -> {
-            return new User();
+            String googleId = (String) map.get("sub");
+            User user = userService.findByGoogleId(googleId).orElseGet(() -> {
+                User newUser = new User();
+                newUser.setGoogleId((String) map.get("sub"));
+                newUser.setName((String) map.get("name"));
+                newUser.setEmail((String) map.get("email"));
+                newUser.setGender((String) map.get("gender"));
+                newUser.setLocale((String) map.get("locale"));
+                newUser.setUserpic((String) map.get("picture"));
+
+                return newUser;
+            });
+            user.setLastVisit(LocalDateTime.now());
+            return userService.createUser(user);
         };
     }
 }

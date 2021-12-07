@@ -100,12 +100,6 @@ Vue.component('items-list', {
         "<item-form :items='items' :itemAttr='itemAttr'/>" +
         "<item-row v-for='item in items' :key='item.id' :items='items' :item='item' :editMethod='editMethod'/>" +
         "</div>",
-    created: function () {
-        itemApi.get().then(result =>
-            result.json().then(
-                data => data.forEach(item => this.items.push(item))
-            ))
-    },
     methods: {
         editMethod: function (item) {
             this.itemAttr = item;
@@ -115,8 +109,24 @@ Vue.component('items-list', {
 
 let app = new Vue({
     el: '#app',
-    template: '<items-list :items="items"/>',
-    data: {
-        items: []
-    }
+    template:
+        '<div>' +
+          '<div v-if="!profile">Необходима авторизация через <a href="/login">Google</a></div>' +
+          '<div v-else>' +
+          '<div>{{profile.name}}&nbsp;<a href="/logout">Logout</a></div>'+
+          '<items-list :items="items"/>' +
+          '</div>' +
+        '</div>',
+    data: function () {
+        return {
+            items: frontEndData.items,
+            profile: frontEndData.profile
+        }
+    },
+    created: function () {
+        //     itemApi.get().then(result =>
+        //         result.json().then(
+        //             data => data.forEach(item => this.items.push(item))
+        //         ))
+    },
 })

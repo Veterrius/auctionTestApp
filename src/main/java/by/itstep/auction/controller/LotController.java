@@ -35,22 +35,23 @@ public class LotController {
         model.put("items", itemService.findItemsOfUser(userService.findUserByName(principal.getName())));
         return "lots";
     }
-
-    @PostMapping(value = "/lots/create")
-    public String createLot(@RequestParam Long itemId, Map<String, Object> model, Principal principal) {
-        lotService.createLotByItemId(itemId, userService.findUserByName(principal.getName()));
-        Long userId = userService.findUserByName(principal.getName()).getId();
-        model.put("lots", lotService.findAllLots());
-        model.put("items", itemService.findItemsOfUser(userService.findUserByName(principal.getName())));
-        return "redirect:/lots/"+userId;
-    }
-
-    @GetMapping(value = "/lots/delete/{id}")
-    public String deleteLot(@PathVariable Long id, Map<String, Object> model, Principal principal) {
-        lotService.deleteLotById(id);
-        Long userId = userService.findUserByName(principal.getName()).getId();
-        model.put("lots", lotService.findAllLots());
-        model.put("items", itemService.findItemsOfUser(userService.findUserByName(principal.getName())));
-        return "redirect:/lots/"+userId;
-    }
 }
+
+//    @PostMapping(value = "/lots/create")
+//    public String createLot(@RequestParam Long itemId, Map<String, Object> model, Principal principal) {
+//        lotService.createLotByItemId(itemId, userService.findUserByName(principal.getName()));
+////        Long userId = userService.findUserByName(principal.getName()).getId();
+//        model.put("lots", lotService.findAllLots());
+//        model.put("items", itemService.findItemsOfUser(userService.findUserByName(principal.getName())));
+//        return "redirect:/lots/"+userId;
+//    }
+//
+//    @GetMapping(value = "/lots/delete/{id}")
+//    public String deleteLot(@PathVariable Long id, Map<String, Object> model, Principal principal) {
+//        lotService.deleteLotById(id);
+//        Long userId = userService.findUserByName(principal.getName()).getId();
+//        model.put("lots", lotService.findAllLots());
+//        model.put("items", itemService.findItemsOfUser(userService.findUserByName(principal.getName())));
+//        return "redirect:/lots/"+userId;
+//    }
+//}
