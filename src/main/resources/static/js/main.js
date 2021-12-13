@@ -109,24 +109,14 @@ Vue.component('items-list', {
 
 let app = new Vue({
     el: '#app',
-    template:
-        '<div>' +
-          '<div v-if="!profile">Необходима авторизация через <a href="/login">Google</a></div>' +
-          '<div v-else>' +
-          '<div>{{profile.name}}&nbsp;<a href="/logout">Logout</a></div>'+
-          '<items-list :items="items"/>' +
-          '</div>' +
-        '</div>',
-    data: function () {
-        return {
-            items: frontEndData.items,
-            profile: frontEndData.profile
-        }
+    template: '<items-list :items="items"/>',
+    data: {
+        items: []
     },
     created: function () {
-        //     itemApi.get().then(result =>
-        //         result.json().then(
-        //             data => data.forEach(item => this.items.push(item))
-        //         ))
+        itemApi.get().then(result =>
+            result.json().then(
+                data => data.forEach(item => this.items.push(item))
+            ))
     },
 })

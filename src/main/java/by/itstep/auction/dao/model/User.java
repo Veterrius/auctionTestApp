@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "user")
@@ -20,12 +21,16 @@ public class User {
     private Long id;
     private String googleId;
     private String name;
-    private String userpic;
+    private String password;
     private String email;
-    private String gender;
-    private String locale;
-    private LocalDateTime lastVisit;
     private Double money;
+    private Boolean status;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles;
 
     public String getGoogleId() {
         return googleId;
@@ -35,12 +40,20 @@ public class User {
         this.googleId = googleId;
     }
 
-    public Double getMoney() {
-        return money;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setMoney(Double money) {
-        this.money = money;
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -59,12 +72,12 @@ public class User {
         this.name = name;
     }
 
-    public String getUserpic() {
-        return userpic;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserpic(String userpic) {
-        this.userpic = userpic;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -75,28 +88,12 @@ public class User {
         this.email = email;
     }
 
-    public String getGender() {
-        return gender;
+    public Double getMoney() {
+        return money;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    public LocalDateTime getLastVisit() {
-        return lastVisit;
-    }
-
-    public void setLastVisit(LocalDateTime lastVisit) {
-        this.lastVisit = lastVisit;
+    public void setMoney(Double money) {
+        this.money = money;
     }
 }
 

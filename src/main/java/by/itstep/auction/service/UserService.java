@@ -20,9 +20,7 @@ import java.util.Optional;
 public class UserService {//implements UserDetailsService {
 
     private final UserRepository userRepository;
-
     private final LotRepository lotRepository;
-
     private final ItemRepository itemRepository;
 
     public UserService(UserRepository userRepository, LotRepository lotRepository, ItemRepository itemRepository) {
