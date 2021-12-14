@@ -35,7 +35,7 @@ public class UserService {//implements UserDetailsService {
 //    }
 
     public User findUserByName(String username) {
-        return userRepository.findByName(username);
+        return userRepository.findByUsername(username);
     }
 
     public User createUser(User user) {
@@ -76,9 +76,5 @@ public class UserService {//implements UserDetailsService {
 
     public Optional<User> findById(String id) {
         return userRepository.findById(id);
-    }
-
-    public Optional<User> findByGoogleId(String googleId) {
-        return userRepository.findByGoogleId(googleId);
     }
 }

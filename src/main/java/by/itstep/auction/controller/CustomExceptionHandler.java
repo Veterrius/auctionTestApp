@@ -1,8 +1,5 @@
 package by.itstep.auction.controller;
 
-import by.itstep.auction.service.ItemService;
-import by.itstep.auction.service.LotService;
-import by.itstep.auction.service.UserService;
 import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
 import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
