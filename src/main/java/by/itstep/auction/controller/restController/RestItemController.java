@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/rest/item")
+@RequestMapping("/api/items")
 public class RestItemController {
 
     final ItemService itemService;

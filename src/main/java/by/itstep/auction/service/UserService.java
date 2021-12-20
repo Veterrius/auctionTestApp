@@ -13,7 +13,6 @@ import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -76,5 +75,9 @@ public class UserService {//implements UserDetailsService {
 
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
