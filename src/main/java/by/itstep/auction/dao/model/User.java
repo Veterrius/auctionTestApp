@@ -5,40 +5,51 @@ package by.itstep.auction.dao.model;
 //import org.springframework.security.core.userdetails.UserDetails;
 
 import by.itstep.auction.dao.model.enums.Role;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import by.itstep.auction.dao.model.enums.Status;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+
+import static by.itstep.auction.dao.model.enums.Status.ACTIVE;
 
 @Table(name = "user")
 @Entity
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @PrePersist
+    public void prePersist() {
+        if (money == null) {
+            setMoney(0.0);
+        }
+        if (status == null) {
+            setStatus(ACTIVE);
+        }
+    }
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "money", columnDefinition = "double default 0")
+    @ColumnDefault(value = "0")
+    @Column(name = "money", nullable = false)
     private Double money;
 
-    @Column(name = "role")
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(name = "status")
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     public Long getId() {
         return id;
@@ -88,11 +99,11 @@ public class User {
         this.role = role;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

@@ -34,9 +34,9 @@ public class UserService {//implements UserDetailsService {
 //        return userRepository.findByUsername(username);
 //    }
 
-    public User findUserByName(String username) {
-        return userRepository.findByUsername(username);
-    }
+//    public User findUserByName(String username) {
+//        return userRepository.findByUsername(username);
+//    }
 
     public User createUser(User user) {
         user.setMoney(0.0);
@@ -74,7 +74,7 @@ public class UserService {//implements UserDetailsService {
         return customer;
     }
 
-    public Optional<User> findById(String id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 }
