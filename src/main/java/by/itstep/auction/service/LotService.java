@@ -10,6 +10,7 @@ import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class LotService {
@@ -27,7 +28,7 @@ public class LotService {
         return lotRepository.findLotBySeller(user);
     }
 
-    public Lot findLotById(Long id) {
+    public Optional<Lot> findLotById(Long id) {
         return lotRepository.findLotById(id);
     }
 
@@ -36,7 +37,7 @@ public class LotService {
     }
 
     public void deleteLotById(Long id) {
-        Lot lotToDelete = lotRepository.findLotById(id);
+        Lot lotToDelete = lotRepository.findLotById(id).orElseThrow();
         lotRepository.delete(lotToDelete);
     }
 
@@ -53,7 +54,7 @@ public class LotService {
         }
     }
 
-    public void createLotByItemId(Long itemId, User user) {
+    public Lot createLotByItemId(Long itemId, User user) {
        Item itemFromDb = itemRepository.findItemById(itemId);
        Lot lot = new Lot();
         if (itemFromDb != null) {
@@ -66,5 +67,12 @@ public class LotService {
                 lotRepository.save(lot);
             } else throw new InvalidItemException("You have selected invalid item");
         } else throw new InvalidItemException("You have selected invalid item");
+        return lot;
+    }
+
+    public Lot updateLot(Lot lotFromDb, Lot updatedLot) {
+        lotFromDb.setPrice(updatedLot.getPrice());
+        lotFromDb.setTime(updatedLot.getTime());
+        return lotRepository.save(lotFromDb);
     }
 }

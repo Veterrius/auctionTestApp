@@ -11,11 +11,16 @@ public class AuthController {
 
     @GetMapping("/login")
     public String getLoginPage() {
-        return "login";
+        return "loginrest";
     }
 
     @GetMapping("/success")
     public String getSuccessPage() {
         return "success";
+    }
+
+    @GetMapping("/register")
+    public String getRegistrationPage() {
+        return "registration";
     }
 }

@@ -4,6 +4,8 @@ import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.User;
 //import by.itstep.auction.dao.model.enums.Role;
+import by.itstep.auction.dao.model.enums.Role;
+import by.itstep.auction.dao.model.enums.Status;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
 import by.itstep.auction.dao.repository.UserRepository;
@@ -11,6 +13,8 @@ import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetailsService;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -38,9 +42,11 @@ public class UserService {//implements UserDetailsService {
 //    }
 
     public User createUser(User user) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setMoney(0.0);
-        user.setId(user.getId());
-//        user.setRoles(Collections.singleton(Role.USER));
+        user.setRole(Role.USER);
+        user.setStatus(Status.ACTIVE);
         return userRepository.save(user);
     }
 
