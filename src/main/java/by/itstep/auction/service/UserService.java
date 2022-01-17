@@ -50,8 +50,9 @@ public class UserService {//implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public User updateUser(User userFromDb, User updatedUser) {
+        userFromDb.setMoney(updatedUser.getMoney());
+        return userRepository.save(userFromDb);
     }
 
     public User updateMoney(User user, Double money, Boolean isAdded) {
@@ -85,5 +86,13 @@ public class UserService {//implements UserDetailsService {
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public Iterable<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 }

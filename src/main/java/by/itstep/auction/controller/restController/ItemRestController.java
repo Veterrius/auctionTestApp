@@ -2,45 +2,50 @@ package by.itstep.auction.controller.restController;
 
 import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.service.ItemService;
+import by.itstep.auction.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/items")
-public class RestItemController {
+public class ItemRestController {
 
-    final ItemService itemService;
+    private final ItemService itemService;
+    private final UserService userService;
 
-    public RestItemController(ItemService itemService) {
+    public ItemRestController(ItemService itemService, UserService userService) {
         this.itemService = itemService;
+        this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     @PreAuthorize(value = "hasAuthority('items:read')")
     public Iterable<Item> getAll() {
         return itemService.getAll();
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('items:read')")
     public Item getOne(@PathVariable Long id) {
         return itemService.findItemById(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     @PreAuthorize(value = "hasAuthority('items:write')")
-    public Item createUser(@RequestBody Item item) {
-        return itemService.createItemWithoutUser(item);
+    public Item createUser(@RequestBody Item item, Principal principal) {
+        return itemService.createItem(item, userService.findByEmail(principal.getName()).orElseThrow());
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('items:write')")
     public Item update(@PathVariable("id") Item itemFromDb, @RequestBody Item item) {
         return itemService.updateItem(itemFromDb, item);
     }
 
+    @DeleteMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('items:write')")
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Item item) {
         itemService.delete(item);
     }

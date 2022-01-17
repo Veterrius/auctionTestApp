@@ -1,4 +1,5 @@
 let loginApi = Vue.resource('/api/auth/login');
+let jwtToken;
 
 Vue.component('login-form', {
     data: function() {
@@ -12,6 +13,7 @@ Vue.component('login-form', {
         "<input type='text' placeholder='Email' v-model='email'>" +
         "<input type='text' placeholder='Password' v-model='password'>" +
         "<input type='button' value='Login' @click='login'>" +
+        "<a href='/auth/login'>Sign In</a>" +
         "</div>",
     methods: {
         login: function () {
@@ -23,7 +25,8 @@ Vue.component('login-form', {
                 data => {
                     this.email = '';
                     this.password = '';
-                    window.location.replace("http://localhost:8080/auth/success");
+                    jwtToken = data.token;
+                    window.location.replace("http://localhost:8080/");
                 }
             ))
         }
