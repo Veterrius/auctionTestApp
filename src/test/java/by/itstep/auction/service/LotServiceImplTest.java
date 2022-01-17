@@ -1,24 +1,19 @@
 package by.itstep.auction.service;
 
-import by.itstep.auction.dao.model.Item;
-import by.itstep.auction.dao.model.Lot;
-import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
-import by.itstep.auction.service.exceptions.InvalidItemException;
+import by.itstep.auction.service.impl.LotServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-
 @ExtendWith(MockitoExtension.class)
-public class LotServiceTest {
+public class LotServiceImplTest {
 
     @InjectMocks
-    private LotService lotService;
+    private LotServiceImpl lotService;
     @Mock
     private LotRepository lotRepository;
     @Mock

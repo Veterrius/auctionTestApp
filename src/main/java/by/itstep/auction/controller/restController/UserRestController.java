@@ -1,7 +1,7 @@
 package by.itstep.auction.controller.restController;
 
 import by.itstep.auction.dao.model.User;
-import by.itstep.auction.service.UserService;
+import by.itstep.auction.service.impl.UserServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +11,9 @@ import java.security.Principal;
 @RequestMapping("/api/users")
 public class UserRestController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public UserRestController(UserService userService) {
+    public UserRestController(UserServiceImpl userService) {
         this.userService = userService;
     }
 

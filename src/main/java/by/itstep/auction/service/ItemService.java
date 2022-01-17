@@ -2,55 +2,23 @@ package by.itstep.auction.service;
 
 import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.User;
-import by.itstep.auction.dao.repository.ItemRepository;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ItemService {
+public interface ItemService {
+    Item findItemByName(String name);
 
-    private final ItemRepository itemRepository;
+    Item createItem(Item item, User user);
 
-    public ItemService(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
-    }
+    Iterable<Item> findAllItems();
 
-    public Item findItemByName(String name) {
-        return itemRepository.findItemByName(name);
-    }
+    Iterable<Item> findItemsOfUser(User user);
 
-    public Item createItem(Item item, User user) {
-        item.setUser(user);
-        return itemRepository.save(item);
-    }
+    Iterable<Item> getAll();
 
-    public Iterable<Item> findAllItems() {
-        return itemRepository.findAll();
-    }
+    Item findItemById(Long id);
 
-    public Iterable<Item> findItemsOfUser(User user) {
-        return itemRepository.findItemsByUser(user);
-    }
+    Item createItemWithoutUser(Item item);
 
-    public Iterable<Item> getAll() {
-        return itemRepository.findAll();
-    }
+    Item updateItem(Item itemToUpdate, Item updatedItem);
 
-    public Item findItemById(Long id) {
-       return itemRepository.findItemById(id);
-    }
-
-    public Item createItemWithoutUser(Item item) {
-        return itemRepository.save(item);
-    }
-
-    public Item updateItem(Item itemToUpdate, Item updatedItem) {
-        itemToUpdate.setDescription(updatedItem.getDescription());
-        itemToUpdate.setPrice(updatedItem.getPrice());
-        itemToUpdate.setName(updatedItem.getName());
-        return itemRepository.save(itemToUpdate);
-    }
-
-    public void delete(Item item) {
-        itemRepository.delete(item);
-    }
+    void delete(Item item);
 }

@@ -2,7 +2,7 @@ package by.itstep.auction.controller.restController;
 
 
 import by.itstep.auction.dao.model.User;
-import by.itstep.auction.service.ItemService;
+import by.itstep.auction.service.impl.ItemServiceImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +15,9 @@ import java.util.HashMap;
 @RequestMapping("/")
 public class MainController {
 
-    private final ItemService itemService;
+    private final ItemServiceImpl itemService;
 
-    public MainController(ItemService itemService) {
+    public MainController(ItemServiceImpl itemService) {
         this.itemService = itemService;
     }
 

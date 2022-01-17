@@ -1,23 +1,21 @@
 package by.itstep.auction.controller.restController;
 
-import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.Lot;
-import by.itstep.auction.service.LotService;
-import by.itstep.auction.service.UserService;
+import by.itstep.auction.service.impl.LotServiceImpl;
+import by.itstep.auction.service.impl.UserServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.PrePersist;
 import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/lots")
 public class LotRestController {
 
-    private final LotService lotService;
-    private final UserService userService;
+    private final LotServiceImpl lotService;
+    private final UserServiceImpl userService;
 
-    public LotRestController(LotService lotService, UserService userService) {
+    public LotRestController(LotServiceImpl lotService, UserServiceImpl userService) {
         this.lotService = lotService;
         this.userService = userService;
     }

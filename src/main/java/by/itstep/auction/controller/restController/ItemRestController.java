@@ -1,8 +1,8 @@
 package by.itstep.auction.controller.restController;
 
 import by.itstep.auction.dao.model.Item;
-import by.itstep.auction.service.ItemService;
-import by.itstep.auction.service.UserService;
+import by.itstep.auction.service.impl.ItemServiceImpl;
+import by.itstep.auction.service.impl.UserServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +12,10 @@ import java.security.Principal;
 @RequestMapping("/api/items")
 public class ItemRestController {
 
-    private final ItemService itemService;
-    private final UserService userService;
+    private final ItemServiceImpl itemService;
+    private final UserServiceImpl userService;
 
-    public ItemRestController(ItemService itemService, UserService userService) {
+    public ItemRestController(ItemServiceImpl itemService, UserServiceImpl userService) {
         this.itemService = itemService;
         this.userService = userService;
     }
