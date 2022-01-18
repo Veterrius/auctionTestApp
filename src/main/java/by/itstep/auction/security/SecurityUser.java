@@ -13,19 +13,19 @@ public class SecurityUser implements UserDetails {
 
     private final String username;
     private final String password;
-    private final List<SimpleGrantedAuthority> authoriries;
+    private final List<SimpleGrantedAuthority> authorities;
     private final boolean isActive;
 
-    public SecurityUser(String username, String password, List<SimpleGrantedAuthority> authoriries, boolean isActive) {
+    public SecurityUser(String username, String password, List<SimpleGrantedAuthority> authorities, boolean isActive) {
         this.username = username;
         this.password = password;
-        this.authoriries = authoriries;
+        this.authorities = authorities;
         this.isActive = isActive;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authoriries;
+        return authorities;
     }
 
     @Override

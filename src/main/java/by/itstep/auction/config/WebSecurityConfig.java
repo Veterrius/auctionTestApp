@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/auth/login", "/auth/login",
                         "/js/login.js", "/auth/success", "/auth/register",
-                        "/api/auth/register", "/js/registration.js").permitAll()
+                        "/api/auth/register", "/js/registration.js", "/api/auth/logout").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
