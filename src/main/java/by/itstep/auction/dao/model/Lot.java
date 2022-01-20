@@ -1,5 +1,7 @@
 package by.itstep.auction.dao.model;
 
+import by.itstep.auction.dao.model.enums.LotType;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -22,8 +24,23 @@ public class Lot {
     @JoinColumn(name = "user_id")
     private User seller;
 
-    @Column(name = "time", nullable = false)
-    private LocalDateTime time;
+    @Column(name = "creation_time", nullable = false)
+    private LocalDateTime creationTime;
+
+    @Column(name = "expiration_time")
+    private LocalDateTime expirationTime;
+
+    @Column(name = "type", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private LotType lotType;
+
+    public LotType getLotType() {
+        return lotType;
+    }
+
+    public void setLotType(LotType lotType) {
+        this.lotType = lotType;
+    }
 
     public Item getItem() {
         return item;
@@ -49,11 +66,19 @@ public class Lot {
         this.seller = owner;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public LocalDateTime getCreationTime() {
+        return creationTime;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public LocalDateTime getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(LocalDateTime expirationTime) {
+        this.expirationTime = expirationTime;
     }
 }

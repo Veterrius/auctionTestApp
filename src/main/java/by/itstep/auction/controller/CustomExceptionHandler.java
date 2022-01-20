@@ -1,5 +1,6 @@
 package by.itstep.auction.controller;
 
+import by.itstep.auction.security.exception.JwtAuthenticationException;
 import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
 import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
@@ -32,6 +33,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(LotAlreadyExistsException.class)
     public ResponseEntity<?> handleInvalidItemException(LotAlreadyExistsException ex) {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<?> handleJwtAuthenticationException(JwtAuthenticationException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);

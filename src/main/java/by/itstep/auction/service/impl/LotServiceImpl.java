@@ -3,6 +3,7 @@ package by.itstep.auction.service.impl;
 import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.User;
+import by.itstep.auction.dao.model.enums.LotType;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
 import by.itstep.auction.service.LotService;
@@ -51,12 +52,13 @@ public class LotServiceImpl implements LotService {
         return lotRepository.findAll();
     }
 
-    @Override
-    public void validateLot(Lot lot) {
+    private void validateLot(Lot lot) {
         Iterable<Lot> allLots = findAllLots();
         for (Lot lotFromDb : allLots) {
             if (lotFromDb.getItem().equals(lot.getItem())) {
-                throw new LotAlreadyExistsException("Lot already exists!");
+                if (lotFromDb.getLotType().equals(lot.getLotType())) {
+                    throw new LotAlreadyExistsException("Lot already exists!");
+                }
             }
         }
     }
@@ -70,7 +72,7 @@ public class LotServiceImpl implements LotService {
                 lot.setItem(itemFromDb);
                 lot.setSeller(user);
                 lot.setPrice(itemFromDb.getPrice());
-                lot.setTime(LocalDateTime.now());
+                lot.setCreationTime(LocalDateTime.now());
                 validateLot(lot);
                 lotRepository.save(lot);
             } else throw new InvalidItemException("You have selected invalid item");
@@ -79,9 +81,27 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
-    public Lot updateLot(Lot lotFromDb, Lot updatedLot) {
-        lotFromDb.setPrice(updatedLot.getPrice());
-        lotFromDb.setTime(updatedLot.getTime());
+    public Lot createLot(Long itemId, LotType type, Long validity) {
+        Item itemFromDb = itemRepository.findItemById(itemId);
+        Lot lot = new Lot();
+        if (itemFromDb.getUser() != null) {
+            lot.setItem(itemFromDb);
+            lot.setSeller(itemFromDb.getUser());
+            lot.setPrice(itemFromDb.getPrice());
+            lot.setCreationTime(LocalDateTime.now());
+            lot.setLotType(type);
+            if (type.equals(LotType.DYNAMIC)) {
+                lot.setExpirationTime(lot.getCreationTime().plusMinutes(validity));
+            }
+            validateLot(lot);
+            return lotRepository.save(lot);
+        } else throw new InvalidItemException("You have selected invalid item");
+    }
+
+    @Override
+    public Lot updateLot(Lot lotFromDb, Double newPrice) {
+        lotFromDb.setPrice(newPrice);
+        lotFromDb.setCreationTime(LocalDateTime.now());
         return lotRepository.save(lotFromDb);
     }
 }

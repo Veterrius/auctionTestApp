@@ -1,6 +1,7 @@
 package by.itstep.auction.controller.restController;
 
 import by.itstep.auction.dao.model.Lot;
+import by.itstep.auction.dao.model.dto.LotDTO;
 import by.itstep.auction.service.impl.LotServiceImpl;
 import by.itstep.auction.service.impl.UserServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,14 +35,14 @@ public class LotRestController {
 
     @PostMapping
     @PreAuthorize(value = "hasAuthority('lots:write')")
-    public Lot create(@RequestBody Long itemId, Principal principal) {
-        return lotService.createLotByItemId(itemId, userService.findByEmail(principal.getName()).orElseThrow());
+    public Lot create(@RequestBody LotDTO lotDTO) {
+        return lotService.createLot(lotDTO.getItemId(), lotDTO.getType(), lotDTO.getValidity());
     }
 
     @PutMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('lots:write')")
-    public Lot update(@PathVariable("id") Lot lotFromDb, @RequestBody Lot updatedLot) {
-        return lotService.updateLot(lotFromDb, updatedLot);
+    public Lot update(@PathVariable("id") Lot lotFromDb, @RequestBody Double newPrice) {
+        return lotService.updateLot(lotFromDb, newPrice);
     }
 
     @DeleteMapping("/{id}")

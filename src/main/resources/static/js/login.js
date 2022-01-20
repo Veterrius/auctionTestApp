@@ -13,7 +13,7 @@ Vue.component('login-form', {
         "<input type='text' placeholder='Email' v-model='email'>" +
         "<input type='text' placeholder='Password' v-model='password'>" +
         "<input type='button' value='Login' @click='login'>" +
-        "<a href='/auth/login'>Sign In</a>" +
+        "<a href='/auth/register'>Sign Up</a>" +
         "</div>",
     methods: {
         login: function () {
