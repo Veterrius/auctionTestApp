@@ -45,6 +45,11 @@ public class LotRestController {
         return lotService.updateLot(lotFromDb, newPrice);
     }
 
+    @PutMapping("/{id}/bet")
+    public Lot placeNewBet(@PathVariable("id") Lot lotFromDb, @RequestBody Double bet, Principal principal) {
+        return lotService.placeNewBet(lotFromDb, bet, principal.getName());
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('lots:write')")
     public void delete(@PathVariable Long id) {

@@ -6,11 +6,16 @@ import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.model.enums.LotType;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
+import by.itstep.auction.service.DynamicLotSellerThread;
 import by.itstep.auction.service.LotService;
+import by.itstep.auction.service.UserService;
+import by.itstep.auction.service.exceptions.AutoSellException;
 import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,12 +23,13 @@ import java.util.Optional;
 public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
-
     private final ItemRepository itemRepository;
+    private final UserService userService;
 
-    public LotServiceImpl(LotRepository lotRepository, ItemRepository itemRepository) {
+    public LotServiceImpl(LotRepository lotRepository, ItemRepository itemRepository, UserService userService) {
         this.lotRepository = lotRepository;
         this.itemRepository = itemRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -91,6 +97,7 @@ public class LotServiceImpl implements LotService {
             lot.setCreationTime(LocalDateTime.now());
             lot.setLotType(type);
             if (type.equals(LotType.DYNAMIC)) {
+                lot.setLastCustomer(itemFromDb.getUser());
                 lot.setExpirationTime(lot.getCreationTime().plusMinutes(validity));
             }
             validateLot(lot);
@@ -103,5 +110,35 @@ public class LotServiceImpl implements LotService {
         lotFromDb.setPrice(newPrice);
         lotFromDb.setCreationTime(LocalDateTime.now());
         return lotRepository.save(lotFromDb);
+    }
+
+    @Override
+    public Lot placeNewBet(Lot lotFromDb, Double bet, String userName) {
+        lotFromDb.setPrice(bet);
+        lotFromDb.setLastCustomer(userService.findByEmail(userName).orElseThrow(() -> new UsernameNotFoundException("Invalid lot")));
+        return lotRepository.save(lotFromDb);
+    }
+
+    @Override
+    public void autoSell(Lot lotToSell) throws AutoSellException {
+        User seller = lotToSell.getSeller();
+        User customer = lotToSell.getLastCustomer();
+        if (seller.equals(customer) ||
+                (lotToSell.getPrice() > customer.getMoney())) {
+            lotRepository.delete(lotToSell);
+            throw new AutoSellException("AutoSell failed");
+        }
+        userService.updateMoney(seller, lotToSell.getPrice(), true);
+        userService.updateMoney(customer, lotToSell.getPrice(), false);
+        Item lotItem = lotToSell.getItem();
+        lotItem.setUser(customer);
+        lotRepository.delete(lotToSell);
+        itemRepository.save(lotItem);
+    }
+
+    @PostConstruct
+    private void init() {
+        Thread lotSeller = new DynamicLotSellerThread(this);
+        lotSeller.start();
     }
 }

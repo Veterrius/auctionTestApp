@@ -24,6 +24,10 @@ public class Lot {
     @JoinColumn(name = "user_id")
     private User seller;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "customer_id")
+    private User lastCustomer;
+
     @Column(name = "creation_time", nullable = false)
     private LocalDateTime creationTime;
 
@@ -80,5 +84,13 @@ public class Lot {
 
     public void setExpirationTime(LocalDateTime expirationTime) {
         this.expirationTime = expirationTime;
+    }
+
+    public User getLastCustomer() {
+        return lastCustomer;
+    }
+
+    public void setLastCustomer(User lastCustomer) {
+        this.lastCustomer = lastCustomer;
     }
 }
