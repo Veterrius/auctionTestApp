@@ -20,16 +20,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @PrePersist
-    public void prePersist() {
-        if (money == null) {
-            setMoney(0.0);
-        }
-        if (status == null) {
-            setStatus(ACTIVE);
-        }
-    }
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
@@ -50,6 +40,10 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "lobby_id")
+    private Lobby lobby;
 
     public Long getId() {
         return id;
@@ -105,6 +99,14 @@ public class User {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Lobby getLobby() {
+        return lobby;
+    }
+
+    public void setLobby(Lobby lobby) {
+        this.lobby = lobby;
     }
 }
 

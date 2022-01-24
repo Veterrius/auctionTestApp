@@ -2,7 +2,7 @@ package by.itstep.auction.dao.model.dto;
 
 import by.itstep.auction.dao.model.enums.LotType;
 
-public class LotDTO {
+public class LotRequestDTO {
     private Long itemId;
     private LotType type;
     private Long validity;

@@ -116,11 +116,15 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public Lot placeNewBet(Lot lotFromDb, Double bet, String userName) {
+        User customer = userService.findByEmail(userName).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
         if (lotFromDb.getPrice() >= bet) {
             throw new MoneyException("Bet must be higher than previous");
         }
+        if (customer.equals(lotFromDb.getItem().getUser())) {
+            throw new MoneyException("You cannot place bet on your own lot");
+        }
         lotFromDb.setPrice(bet);
-        lotFromDb.setLastCustomer(userService.findByEmail(userName).orElseThrow(() -> new UsernameNotFoundException("Invalid lot")));
+        lotFromDb.setLastCustomer(customer);
         return lotRepository.save(lotFromDb);
     }
 
@@ -171,7 +175,7 @@ public class LotServiceImpl implements LotService {
     public void lotClear(Lot lot) {
         List<Lot> lots = lotRepository.findAll();
         for (Lot lotInDb : lots) {
-            if (lot.getItem().equals(lotInDb.getItem())){
+            if (lot.getItem().getId().equals(lotInDb.getItem().getId())){
                 lotRepository.delete(lotInDb);
             }
         }
