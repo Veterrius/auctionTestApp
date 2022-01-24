@@ -12,11 +12,13 @@ import by.itstep.auction.service.UserService;
 import by.itstep.auction.service.exceptions.AutoSellException;
 import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
+import by.itstep.auction.service.exceptions.MoneyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -114,6 +116,9 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public Lot placeNewBet(Lot lotFromDb, Double bet, String userName) {
+        if (lotFromDb.getPrice() >= bet) {
+            throw new MoneyException("Bet must be higher than previous");
+        }
         lotFromDb.setPrice(bet);
         lotFromDb.setLastCustomer(userService.findByEmail(userName).orElseThrow(() -> new UsernameNotFoundException("Invalid lot")));
         return lotRepository.save(lotFromDb);
@@ -133,12 +138,42 @@ public class LotServiceImpl implements LotService {
         Item lotItem = lotToSell.getItem();
         lotItem.setUser(customer);
         lotRepository.delete(lotToSell);
+        lotClear(lotToSell);
         itemRepository.save(lotItem);
+    }
+
+    @Override
+    public User purchase(User customer, Lot lot) {
+        User seller = lot.getSeller();
+        if (customer.getMoney() >= lot.getPrice()) {
+            Item itemToBuy = itemRepository.findItemById(lot.getItem().getId());
+            if (!customer.getId().equals(seller.getId())) {
+                if (itemToBuy.getUser() == seller) {
+                    userService.updateMoney(customer, lot.getPrice(), false);
+                    userService.updateMoney(seller, lot.getPrice(), true);
+                    itemToBuy.setUser(customer);
+                    lotRepository.delete(lot);
+                    lotClear(lot);
+                }
+            }
+        } else throw new MoneyException("You have not enough money");
+        return customer;
     }
 
     @PostConstruct
     private void init() {
         Thread lotSeller = new DynamicLotSellerThread(this);
+        lotSeller.setDaemon(true);
         lotSeller.start();
+    }
+
+    @Override
+    public void lotClear(Lot lot) {
+        List<Lot> lots = lotRepository.findAll();
+        for (Lot lotInDb : lots) {
+            if (lot.getItem().equals(lotInDb.getItem())){
+                lotRepository.delete(lotInDb);
+            }
+        }
     }
 }

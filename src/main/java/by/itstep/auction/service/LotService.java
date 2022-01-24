@@ -27,4 +27,8 @@ public interface LotService {
     Lot placeNewBet(Lot lotFromDb, Double bet, String name);
 
     void autoSell(Lot lotToSell) throws AutoSellException;
+
+    User purchase(User customer, Lot lot);
+
+    void lotClear(Lot lot);
 }

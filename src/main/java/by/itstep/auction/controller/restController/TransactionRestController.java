@@ -23,7 +23,7 @@ public class TransactionRestController {
     @PostMapping
     @PreAuthorize(value = "hasAuthority('transaction')")
     public User buy(@RequestBody Long id, Principal principal) {
-        return userService.purchase(userService.findByEmail(principal.getName()).orElseThrow(),
+        return lotService.purchase(userService.findByEmail(principal.getName()).orElseThrow(),
                 lotService.findLotById(id).orElseThrow());
     }
 }

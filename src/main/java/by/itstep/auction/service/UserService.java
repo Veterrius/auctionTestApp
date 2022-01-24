@@ -12,8 +12,6 @@ public interface UserService {
 
     User updateMoney(User user, Double money, Boolean isAdded);
 
-    User purchase(User customer, Lot lot);
-
     Optional<User> findById(Long id);
 
     Optional<User> findByEmail(String email);

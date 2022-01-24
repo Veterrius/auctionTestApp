@@ -3,7 +3,7 @@ package by.itstep.auction.controller;
 import by.itstep.auction.security.exception.JwtAuthenticationException;
 import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
-import by.itstep.auction.service.exceptions.NotEnoughMoneyException;
+import by.itstep.auction.service.exceptions.MoneyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,8 +24,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
-    @ExceptionHandler(NotEnoughMoneyException.class)
-    public ResponseEntity<?> handleNotEnoughMoneyException(NotEnoughMoneyException ex) {
+    @ExceptionHandler(MoneyException.class)
+    public ResponseEntity<?> handleNotEnoughMoneyException(MoneyException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
