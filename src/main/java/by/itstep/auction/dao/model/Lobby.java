@@ -24,6 +24,9 @@ public class Lobby {
     @Column(name = "max_users", nullable = false)
     private Integer maxUsers;
 
+    @Column(name = "current_users", nullable = false)
+    private Integer currentUsers;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private LobbyStatus lobbyStatus;
@@ -66,5 +69,13 @@ public class Lobby {
 
     public void setLobbyStatus(LobbyStatus lobbyStatus) {
         this.lobbyStatus = lobbyStatus;
+    }
+
+    public Integer getCurrentUsers() {
+        return currentUsers;
+    }
+
+    public void setCurrentUsers(Integer currentUsers) {
+        this.currentUsers = currentUsers;
     }
 }

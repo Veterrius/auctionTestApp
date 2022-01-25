@@ -1,8 +1,10 @@
 package by.itstep.auction.service;
 
+import by.itstep.auction.dao.model.Lobby;
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -17,6 +19,10 @@ public interface UserService {
     Optional<User> findByEmail(String email);
 
     Iterable<User> findAll();
+    
+    User fullUserUpdate(User user);
 
     void deleteUser(User user);
+
+    List<User> findUsersInLobby(Lobby lobby);
 }

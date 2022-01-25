@@ -33,6 +33,26 @@ public class LobbyRestController {
         return lobbyService.createLobby(lobbyRequestDTO);
     }
 
+    @PostMapping("/{id}/start")
+    public Lobby startLobby(@PathVariable("id") Lobby lobby,  Principal principal) {
+        return lobbyService.startLobby(lobby, principal.getName());
+    }
+
+    @PostMapping("/{id}/join")
+    public Lobby joinLobby(@PathVariable("id") Lobby lobby, Principal principal) {
+        return lobbyService.joinLobby(lobby, principal.getName());
+    }
+
+    @PostMapping("/{id}/leave")
+    public Lobby leaveLobby(@PathVariable("id") Lobby lobby, Principal principal) {
+        return lobbyService.leaveLobby(lobby, principal.getName());
+    }
+
+    @PostMapping("/{id}/bet")
+    public Lobby placeBet(@PathVariable("id") Lobby lobby, @RequestBody Double bet, Principal principal) {
+        return lobbyService.placeBet(lobby, bet, principal);
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Lobby lobby) {
         lobbyService.delete(lobby);

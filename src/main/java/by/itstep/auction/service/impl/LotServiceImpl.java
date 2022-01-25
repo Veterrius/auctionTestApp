@@ -6,7 +6,8 @@ import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.model.enums.LotType;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
-import by.itstep.auction.service.DynamicLotSellerThread;
+import by.itstep.auction.service.LotAutoSellerThread;
+import by.itstep.auction.service.LobbyService;
 import by.itstep.auction.service.LotService;
 import by.itstep.auction.service.UserService;
 import by.itstep.auction.service.exceptions.AutoSellException;
@@ -98,7 +99,7 @@ public class LotServiceImpl implements LotService {
             lot.setPrice(itemFromDb.getPrice());
             lot.setCreationTime(LocalDateTime.now());
             lot.setLotType(type);
-            if (type.equals(LotType.DYNAMIC)) {
+            if (type.equals(LotType.DYNAMIC) || type.equals(LotType.LOBBY)) {
                 lot.setLastCustomer(itemFromDb.getUser());
                 lot.setExpirationTime(lot.getCreationTime().plusMinutes(validity));
             }
@@ -122,6 +123,9 @@ public class LotServiceImpl implements LotService {
         }
         if (customer.equals(lotFromDb.getItem().getUser())) {
             throw new MoneyException("You cannot place bet on your own lot");
+        }
+        if (lotFromDb.getLotType().equals(LotType.LOBBY)) {
+            lotFromDb.setExpirationTime(lotFromDb.getExpirationTime().plusMinutes(1));
         }
         lotFromDb.setPrice(bet);
         lotFromDb.setLastCustomer(customer);
@@ -166,7 +170,7 @@ public class LotServiceImpl implements LotService {
 
     @PostConstruct
     private void init() {
-        Thread lotSeller = new DynamicLotSellerThread(this);
+        Thread lotSeller = new LotAutoSellerThread(this);
         lotSeller.setDaemon(true);
         lotSeller.start();
     }

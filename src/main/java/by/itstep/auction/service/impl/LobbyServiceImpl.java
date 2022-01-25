@@ -8,12 +8,15 @@ import by.itstep.auction.dao.model.dto.LobbyRequestDTO;
 import by.itstep.auction.dao.model.enums.LobbyStatus;
 import by.itstep.auction.dao.model.enums.LotType;
 import by.itstep.auction.dao.repository.LobbyRepository;
-import by.itstep.auction.service.ItemService;
-import by.itstep.auction.service.LobbyService;
-import by.itstep.auction.service.LotService;
-import by.itstep.auction.service.UserService;
+import by.itstep.auction.service.*;
+import by.itstep.auction.service.exceptions.AutoSellException;
+import by.itstep.auction.service.exceptions.LobbyException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +26,13 @@ public class LobbyServiceImpl implements LobbyService {
     private final LobbyRepository lobbyRepository;
     private final LotService lotService;
     private final ItemService itemService;
+    private final UserService userService;
 
-    public LobbyServiceImpl(LobbyRepository lobbyRepository, LotService lotService, ItemService itemService) {
+    public LobbyServiceImpl(LobbyRepository lobbyRepository, LotService lotService, ItemService itemService, UserService userService) {
         this.lobbyRepository = lobbyRepository;
         this.lotService = lotService;
         this.itemService = itemService;
+        this.userService = userService;
     }
 
     @Override
@@ -44,17 +49,88 @@ public class LobbyServiceImpl implements LobbyService {
     public Lobby createLobby(LobbyRequestDTO lobbyRequest) {
         Item itemToSell = itemService.findItemById(lobbyRequest.getItemId());
         User owner = itemToSell.getUser();
-        Lot lobbyLot = lotService.createLot(lobbyRequest.getItemId(), LotType.LOBBY, 1L);
+        Lot lobbyLot = lotService.createLot(lobbyRequest.getItemId(), LotType.LOBBY, 2628000L);
         Lobby lobby = new Lobby();
         lobby.setLot(lobbyLot);
         lobby.setOwner(owner);
         lobby.setMaxUsers(lobbyRequest.getMaxUsers());
+        lobby.setCurrentUsers(1);
         lobby.setLobbyStatus(LobbyStatus.FREE);
-        return lobbyRepository.save(lobby);
+        lobbyRepository.save(lobby);
+        userService.fullUserUpdate(owner);
+        return lobby;
     }
 
     @Override
     public void delete(Lobby lobby) {
+        lotService.deleteLotById(lobby.getLot().getId());
+        clearUsers(lobby);
         lobbyRepository.delete(lobby);
+    }
+
+    @Override
+    public Lobby startLobby(Lobby lobbyFromDb, String email) {
+        User principal = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (!lobbyFromDb.getOwner().getId().equals(principal.getId())) {
+            throw new LobbyException("You don't have such lobby");
+        }
+        lobbyFromDb.setLobbyStatus(LobbyStatus.STARTED);
+        Lot lot = lobbyFromDb.getLot();
+        lot.setExpirationTime(LocalDateTime.now().plusMinutes(1));
+        lotService.createLot(lot);
+        lobbyFromDb.setLot(lot);
+        return lobbyRepository.save(lobbyFromDb);
+    }
+
+    @Override
+    public Lobby joinLobby(Lobby lobbyFromDb, String email) {
+        User principal = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (lobbyFromDb.getOwner().getId().equals(principal.getId()) ||
+                principal.getLobby() != null) {
+            throw new LobbyException("You are already in lobby");
+        }
+        if (lobbyFromDb.getMaxUsers().equals(lobbyFromDb.getCurrentUsers())) {
+            throw new LobbyException("Lobby is full");
+        }
+        principal.setLobby(lobbyFromDb);
+        userService.fullUserUpdate(principal);
+        lobbyFromDb.setCurrentUsers(lobbyFromDb.getCurrentUsers()+1);
+        return lobbyRepository.save(lobbyFromDb);
+    }
+
+    @Override
+    public Lobby leaveLobby(Lobby lobbyFromDb, String email) {
+        User principal = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        principal.setLobby(null);
+        lobbyFromDb.setCurrentUsers(lobbyFromDb.getCurrentUsers()-1);
+        userService.fullUserUpdate(principal);
+        return lobbyRepository.save(lobbyFromDb);
+    }
+
+    @Override
+    public Lobby placeBet(Lobby lobby, Double bet, Principal principal) {
+        lotService.placeNewBet(lobby.getLot(), bet, principal.getName());
+        return lobby;
+    }
+
+    private void clearUsers(Lobby lobby) {
+        List<User> usersInLobby = userService.findUsersInLobby(lobby);
+        for (User user : usersInLobby) {
+            user.setLobby(null);
+            userService.fullUserUpdate(user);
+        }
+    }
+
+    @Override
+    public void lobbyAutoSell(Lot lot) throws AutoSellException {
+        lotService.autoSell(lot);
+        delete(lot.getSeller().getLobby());
+    }
+
+    @PostConstruct
+    private void init(){
+        Thread seller = new LobbyAutoSellerThread(this, lotService);
+        seller.setDaemon(true);
+        seller.start();
     }
 }

@@ -2,6 +2,7 @@ package by.itstep.auction.controller;
 
 import by.itstep.auction.security.exception.JwtAuthenticationException;
 import by.itstep.auction.service.exceptions.InvalidItemException;
+import by.itstep.auction.service.exceptions.LobbyException;
 import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
 import by.itstep.auction.service.exceptions.MoneyException;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(JwtAuthenticationException.class)
     public ResponseEntity<?> handleJwtAuthenticationException(JwtAuthenticationException ex) {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
+    @ExceptionHandler(LobbyException.class)
+    public ResponseEntity<?> handleLobbyException(LobbyException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);

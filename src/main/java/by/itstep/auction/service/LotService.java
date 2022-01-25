@@ -1,5 +1,6 @@
 package by.itstep.auction.service;
 
+import by.itstep.auction.dao.model.Lobby;
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.model.enums.LotType;

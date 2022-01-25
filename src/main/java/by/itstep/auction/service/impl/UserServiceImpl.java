@@ -1,14 +1,17 @@
 package by.itstep.auction.service.impl;
 
+import by.itstep.auction.dao.model.Lobby;
 import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.model.enums.Status;
 import by.itstep.auction.dao.repository.UserRepository;
 import by.itstep.auction.service.UserService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,5 +66,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(User user) {
         userRepository.delete(user);
+    }
+
+    @Override
+    public User fullUserUpdate(User user) {
+        User userFromDb = userRepository.findByEmail(user.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        userFromDb.setLobby(user.getLobby());
+        userFromDb.setMoney(user.getMoney());
+        userFromDb.setPassword(user.getPassword());
+        userFromDb.setRole(user.getRole());
+        userFromDb.setEmail(user.getEmail());
+        userFromDb.setStatus(user.getStatus());
+        userFromDb.setUsername(user.getUsername());
+        return userRepository.save(userFromDb);
+    }
+
+    @Override
+    public List<User> findUsersInLobby(Lobby lobby) {
+        return userRepository.findAllByLobby(lobby);
     }
 }

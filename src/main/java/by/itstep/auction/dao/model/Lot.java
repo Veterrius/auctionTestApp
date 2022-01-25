@@ -93,4 +93,12 @@ public class Lot {
     public void setLastCustomer(User lastCustomer) {
         this.lastCustomer = lastCustomer;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

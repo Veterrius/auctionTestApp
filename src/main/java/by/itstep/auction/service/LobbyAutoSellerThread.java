@@ -9,11 +9,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-public class DynamicLotSellerThread extends Thread{
+public class LobbyAutoSellerThread extends Thread{
 
+    private final LobbyService lobbyService;
     private final LotService lotService;
 
-    public DynamicLotSellerThread(LotService lotService) {
+    public LobbyAutoSellerThread(LobbyService lobbyService, LotService lotService) {
+        this.lobbyService = lobbyService;
         this.lotService = lotService;
     }
 
@@ -22,10 +24,10 @@ public class DynamicLotSellerThread extends Thread{
         while (true) {
             List<Lot> lots = (List<Lot>) lotService.findAllLots();
             for (Lot lot : lots) {
-                if (LotType.DYNAMIC.equals(lot.getLotType())) {
+                if (LotType.LOBBY.equals(lot.getLotType())) {
                     if (lot.getExpirationTime().isBefore(LocalDateTime.now())) {
                         try {
-                            lotService.autoSell(lot);
+                            lobbyService.lobbyAutoSell(lot);
                         } catch (AutoSellException e) {
                             e.printStackTrace();
                         }
