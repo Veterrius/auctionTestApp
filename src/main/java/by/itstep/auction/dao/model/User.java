@@ -6,6 +6,7 @@ package by.itstep.auction.dao.model;
 
 import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.model.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -41,6 +42,7 @@ public class User {
     @Column(name = "status", nullable = false)
     private Status status;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lobby_id")
     private Lobby lobby;

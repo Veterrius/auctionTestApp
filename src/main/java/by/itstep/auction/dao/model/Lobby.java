@@ -1,6 +1,7 @@
 package by.itstep.auction.dao.model;
 
 import by.itstep.auction.dao.model.enums.LobbyStatus;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,7 +17,7 @@ public class Lobby {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lot_id")
     private Lot lot;
-
+    
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private User owner;

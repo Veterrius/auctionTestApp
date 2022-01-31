@@ -17,6 +17,8 @@ public interface LotService {
 
     void deleteLotById(Long id);
 
+    void deleteLot(Lot lot);
+
     Iterable<Lot> findAllLots();
 
     Lot createLotByItemId(Long itemId, User user);

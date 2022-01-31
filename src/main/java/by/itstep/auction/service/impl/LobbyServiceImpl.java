@@ -57,13 +57,15 @@ public class LobbyServiceImpl implements LobbyService {
         lobby.setCurrentUsers(1);
         lobby.setLobbyStatus(LobbyStatus.FREE);
         lobbyRepository.save(lobby);
+        owner.setLobby(lobby);
         userService.fullUserUpdate(owner);
         return lobby;
     }
 
     @Override
     public void delete(Lobby lobby) {
-        lotService.deleteLotById(lobby.getLot().getId());
+        lobby.setLot(null);
+        lobbyRepository.save(lobby);
         clearUsers(lobby);
         lobbyRepository.delete(lobby);
     }
@@ -89,17 +91,23 @@ public class LobbyServiceImpl implements LobbyService {
                 principal.getLobby() != null) {
             throw new LobbyException("You are already in lobby");
         }
-        if (lobbyFromDb.getMaxUsers().equals(lobbyFromDb.getCurrentUsers())) {
+        if (LobbyStatus.FULL.equals(lobbyFromDb.getLobbyStatus())) {
             throw new LobbyException("Lobby is full");
         }
         principal.setLobby(lobbyFromDb);
         userService.fullUserUpdate(principal);
         lobbyFromDb.setCurrentUsers(lobbyFromDb.getCurrentUsers()+1);
+        if (lobbyFromDb.getCurrentUsers().equals(lobbyFromDb.getMaxUsers())) {
+            lobbyFromDb.setLobbyStatus(LobbyStatus.FULL);
+        }
         return lobbyRepository.save(lobbyFromDb);
     }
 
     @Override
     public Lobby leaveLobby(Lobby lobbyFromDb, String email) {
+        if (LobbyStatus.STARTED.equals(lobbyFromDb.getLobbyStatus())) {
+            throw new LobbyException("You cannot leave from the started lobby");
+        }
         User principal = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         principal.setLobby(null);
         lobbyFromDb.setCurrentUsers(lobbyFromDb.getCurrentUsers()-1);
@@ -109,6 +117,9 @@ public class LobbyServiceImpl implements LobbyService {
 
     @Override
     public Lobby placeBet(Lobby lobby, Double bet, Principal principal) {
+        if (!LobbyStatus.STARTED.equals(lobby.getLobbyStatus())) {
+            throw new LobbyException("Lobby is not started yet");
+        }
         lotService.placeNewBet(lobby.getLot(), bet, principal.getName());
         return lobby;
     }
@@ -123,8 +134,8 @@ public class LobbyServiceImpl implements LobbyService {
 
     @Override
     public void lobbyAutoSell(Lot lot) throws AutoSellException {
-        lotService.autoSell(lot);
         delete(lot.getSeller().getLobby());
+        lotService.autoSell(lot);
     }
 
     @PostConstruct

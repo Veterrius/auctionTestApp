@@ -57,6 +57,11 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
+    public void deleteLot(Lot lot) {
+        lotRepository.delete(lot);
+    }
+
+    @Override
     public Iterable<Lot> findAllLots() {
         return lotRepository.findAll();
     }
@@ -135,7 +140,11 @@ public class LotServiceImpl implements LotService {
     @Override
     public void autoSell(Lot lotToSell) throws AutoSellException {
         User seller = lotToSell.getSeller();
+        seller.setLobby(null);
         User customer = lotToSell.getLastCustomer();
+        customer.setLobby(null);
+        userService.fullUserUpdate(seller);
+        userService.fullUserUpdate(customer);
         if (seller.equals(customer) ||
                 (lotToSell.getPrice() > customer.getMoney())) {
             lotRepository.delete(lotToSell);
