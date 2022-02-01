@@ -11,6 +11,9 @@ import by.itstep.auction.dao.repository.LobbyRepository;
 import by.itstep.auction.service.*;
 import by.itstep.auction.service.exceptions.AutoSellException;
 import by.itstep.auction.service.exceptions.LobbyException;
+import by.itstep.auction.service.threads.LobbyAutoSellerThread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,8 @@ import java.util.Optional;
 
 @Service
 public class LobbyServiceImpl implements LobbyService {
+
+    private final Logger l = LoggerFactory.getLogger(LobbyServiceImpl.class);
 
     private final LobbyRepository lobbyRepository;
     private final LotService lotService;
@@ -59,6 +64,7 @@ public class LobbyServiceImpl implements LobbyService {
         lobbyRepository.save(lobby);
         owner.setLobby(lobby);
         userService.fullUserUpdate(owner);
+        l.info(owner.getEmail()+" created Lobby");
         return lobby;
     }
 
@@ -67,6 +73,16 @@ public class LobbyServiceImpl implements LobbyService {
         lobby.setLot(null);
         lobbyRepository.save(lobby);
         clearUsers(lobby);
+        lobbyRepository.delete(lobby);
+    }
+
+    @Override
+    public void deleteWithLot(Lobby lobby) {
+        Lot lotToDelete = lobby.getLot();
+        lobby.setLot(null);
+        lobbyRepository.save(lobby);
+        clearUsers(lobby);
+        lotService.deleteLot(lotToDelete);
         lobbyRepository.delete(lobby);
     }
 
@@ -81,6 +97,7 @@ public class LobbyServiceImpl implements LobbyService {
         lot.setExpirationTime(LocalDateTime.now().plusMinutes(1));
         lotService.createLot(lot);
         lobbyFromDb.setLot(lot);
+        l.info("Lobby#"+lobbyFromDb.getId()+" was started");
         return lobbyRepository.save(lobbyFromDb);
     }
 
@@ -100,6 +117,7 @@ public class LobbyServiceImpl implements LobbyService {
         if (lobbyFromDb.getCurrentUsers().equals(lobbyFromDb.getMaxUsers())) {
             lobbyFromDb.setLobbyStatus(LobbyStatus.FULL);
         }
+        l.info(principal.getEmail()+" joined Lobby#"+lobbyFromDb.getId());
         return lobbyRepository.save(lobbyFromDb);
     }
 
@@ -112,6 +130,7 @@ public class LobbyServiceImpl implements LobbyService {
         principal.setLobby(null);
         lobbyFromDb.setCurrentUsers(lobbyFromDb.getCurrentUsers()-1);
         userService.fullUserUpdate(principal);
+        l.info(principal.getEmail()+" left Lobby#"+lobbyFromDb.getId());
         return lobbyRepository.save(lobbyFromDb);
     }
 
@@ -121,6 +140,7 @@ public class LobbyServiceImpl implements LobbyService {
             throw new LobbyException("Lobby is not started yet");
         }
         lotService.placeNewBet(lobby.getLot(), bet, principal.getName());
+        l.info(principal.getName()+" placed "+ bet + " in Lobby#"+ lobby.getId());
         return lobby;
     }
 

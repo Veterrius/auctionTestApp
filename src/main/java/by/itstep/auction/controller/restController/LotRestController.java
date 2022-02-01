@@ -10,15 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/lots")
+@RequestMapping("/api/lot")
 public class LotRestController {
 
     private final LotServiceImpl lotService;
-    private final UserServiceImpl userService;
 
-    public LotRestController(LotServiceImpl lotService, UserServiceImpl userService) {
+    public LotRestController(LotServiceImpl lotService) {
         this.lotService = lotService;
-        this.userService = userService;
     }
 
     @GetMapping

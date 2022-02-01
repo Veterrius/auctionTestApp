@@ -1,10 +1,13 @@
 package by.itstep.auction.controller;
 
+import by.itstep.auction.controller.restController.LobbyRestController;
 import by.itstep.auction.security.exception.JwtAuthenticationException;
 import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.exceptions.LobbyException;
 import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
 import by.itstep.auction.service.exceptions.MoneyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,10 +21,13 @@ import java.util.Map;
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private final Logger l = LoggerFactory.getLogger(CustomExceptionHandler.class);
+
     @ExceptionHandler(InvalidItemException.class)
     public ResponseEntity<?> handleInvalidItemException(InvalidItemException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
+        l.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
@@ -29,6 +35,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleNotEnoughMoneyException(MoneyException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
+        l.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
@@ -36,6 +43,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleInvalidItemException(LotAlreadyExistsException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
+        l.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
@@ -43,6 +51,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleJwtAuthenticationException(JwtAuthenticationException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
+        l.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
@@ -50,6 +59,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleLobbyException(LobbyException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
+        l.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

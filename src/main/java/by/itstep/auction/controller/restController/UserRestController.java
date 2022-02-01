@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserRestController {
 
     private final UserServiceImpl userService;

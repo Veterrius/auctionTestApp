@@ -1,7 +1,8 @@
-package by.itstep.auction.service;
+package by.itstep.auction.service.threads;
 
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.enums.LotType;
+import by.itstep.auction.service.LotService;
 import by.itstep.auction.service.exceptions.AutoSellException;
 import org.springframework.stereotype.Component;
 

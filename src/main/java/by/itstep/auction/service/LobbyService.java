@@ -19,6 +19,8 @@ public interface LobbyService {
 
     void delete(Lobby lobby);
 
+    void deleteWithLot(Lobby lobby);
+
     Lobby startLobby(Lobby lobby, String email);
 
     Lobby joinLobby(Lobby lobby, String email);

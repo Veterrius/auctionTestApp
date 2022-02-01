@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/items")
+@RequestMapping("/api/item")
 public class ItemRestController {
 
     private final ItemServiceImpl itemService;

@@ -8,6 +8,7 @@ public enum Permission {
     USERS_MONEY("users:money"),
     LOTS_READ("lots:read"),
     LOTS_WRITE("lots:write"),
+    LOBBY_ALL("lobby:all"),
     TRANSACTION("transaction");
 
     private final String permission;
