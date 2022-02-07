@@ -4,7 +4,10 @@ import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.model.dto.AuthenticationRequestDTO;
 import by.itstep.auction.security.JwtTokenProvider;
 import by.itstep.auction.security.SecurityUser;
+import by.itstep.auction.service.impl.LotServiceImpl;
 import by.itstep.auction.service.impl.UserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +27,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationRestController {
+
+    private final Logger l = LoggerFactory.getLogger(LotServiceImpl.class);
 
     private final AuthenticationManager authenticationManager;
     private final UserServiceImpl userService;
@@ -51,6 +56,7 @@ public class AuthenticationRestController {
 
             return ResponseEntity.ok(body);
         } catch (AuthenticationException e) {
+            l.error(e.getMessage());
             return new ResponseEntity<>("Invalid email password combination", HttpStatus.FORBIDDEN);
         }
     }

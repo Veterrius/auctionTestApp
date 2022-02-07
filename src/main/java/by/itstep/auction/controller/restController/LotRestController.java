@@ -33,8 +33,9 @@ public class LotRestController {
 
     @PostMapping
     @PreAuthorize(value = "hasAuthority('lots:write')")
-    public Lot create(@RequestBody LotRequestDTO lotRequestDTO) {
-        return lotService.createLot(lotRequestDTO.getItemId(), lotRequestDTO.getType(), lotRequestDTO.getValidity());
+    public Lot create(@RequestBody LotRequestDTO lotRequestDTO, Principal principal) {
+        return lotService.createLot(lotRequestDTO.getItemId(), lotRequestDTO.getType(),
+                lotRequestDTO.getValidity(), principal.getName());
     }
 
     @PutMapping("/{id}")

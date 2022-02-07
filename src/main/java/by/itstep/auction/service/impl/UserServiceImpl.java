@@ -6,6 +6,8 @@ import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.model.enums.Status;
 import by.itstep.auction.dao.repository.UserRepository;
 import by.itstep.auction.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +18,8 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private final Logger l = LoggerFactory.getLogger(LotServiceImpl.class);
 
     private final UserRepository userRepository;
     public UserServiceImpl(UserRepository userRepository) {
@@ -45,7 +49,9 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setMoney(user.getMoney() - money);
         }
-        return userRepository.save(user);
+        userRepository.save(user);
+        l.info("User "+user.getEmail()+"#"+user.getId()+" updated money");
+        return user;
     }
 
     @Override

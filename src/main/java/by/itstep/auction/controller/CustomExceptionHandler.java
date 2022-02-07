@@ -1,11 +1,5 @@
 package by.itstep.auction.controller;
 
-import by.itstep.auction.controller.restController.LobbyRestController;
-import by.itstep.auction.security.exception.JwtAuthenticationException;
-import by.itstep.auction.service.exceptions.InvalidItemException;
-import by.itstep.auction.service.exceptions.LobbyException;
-import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
-import by.itstep.auction.service.exceptions.MoneyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,43 +17,51 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Logger l = LoggerFactory.getLogger(CustomExceptionHandler.class);
 
-    @ExceptionHandler(InvalidItemException.class)
-    public ResponseEntity<?> handleInvalidItemException(InvalidItemException ex) {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        l.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
-    }
-
-    @ExceptionHandler(MoneyException.class)
-    public ResponseEntity<?> handleNotEnoughMoneyException(MoneyException ex) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
         Map<Object, Object> body = new HashMap<>();
         body.put("message", ex.getMessage());
         l.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
-    @ExceptionHandler(LotAlreadyExistsException.class)
-    public ResponseEntity<?> handleInvalidItemException(LotAlreadyExistsException ex) {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        l.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-    }
-
-    @ExceptionHandler(JwtAuthenticationException.class)
-    public ResponseEntity<?> handleJwtAuthenticationException(JwtAuthenticationException ex) {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        l.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-    }
-
-    @ExceptionHandler(LobbyException.class)
-    public ResponseEntity<?> handleLobbyException(LobbyException ex) {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        l.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-    }
+//    @ExceptionHandler(InvalidItemException.class)
+//    public ResponseEntity<?> handleInvalidItemException(InvalidItemException ex) {
+//        Map<Object, Object> body = new HashMap<>();
+//        body.put("message", ex.getMessage());
+//        l.error(ex.getMessage());
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+//    }
+//
+//    @ExceptionHandler(MoneyException.class)
+//    public ResponseEntity<?> handleNotEnoughMoneyException(MoneyException ex) {
+//        Map<Object, Object> body = new HashMap<>();
+//        body.put("message", ex.getMessage());
+//        l.error(ex.getMessage());
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+//    }
+//
+//    @ExceptionHandler(LotAlreadyExistsException.class)
+//    public ResponseEntity<?> handleInvalidItemException(LotAlreadyExistsException ex) {
+//        Map<Object, Object> body = new HashMap<>();
+//        body.put("message", ex.getMessage());
+//        l.error(ex.getMessage());
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+//    }
+//
+//    @ExceptionHandler(JwtAuthenticationException.class)
+//    public ResponseEntity<?> handleJwtAuthenticationException(JwtAuthenticationException ex) {
+//        Map<Object, Object> body = new HashMap<>();
+//        body.put("message", ex.getMessage());
+//        l.error(ex.getMessage());
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+//    }
+//
+//    @ExceptionHandler(LobbyException.class)
+//    public ResponseEntity<?> handleLobbyException(LobbyException ex) {
+//        Map<Object, Object> body = new HashMap<>();
+//        body.put("message", ex.getMessage());
+//        l.error(ex.getMessage());
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+//    }
 }

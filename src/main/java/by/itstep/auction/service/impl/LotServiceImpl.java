@@ -6,13 +6,12 @@ import by.itstep.auction.dao.model.User;
 import by.itstep.auction.dao.model.enums.LotType;
 import by.itstep.auction.dao.repository.ItemRepository;
 import by.itstep.auction.dao.repository.LotRepository;
+import by.itstep.auction.service.exceptions.*;
 import by.itstep.auction.service.threads.LotAutoSellerThread;
 import by.itstep.auction.service.LotService;
 import by.itstep.auction.service.UserService;
-import by.itstep.auction.service.exceptions.AutoSellException;
-import by.itstep.auction.service.exceptions.InvalidItemException;
-import by.itstep.auction.service.exceptions.LotAlreadyExistsException;
-import by.itstep.auction.service.exceptions.MoneyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,8 @@ import java.util.Optional;
 
 @Service
 public class LotServiceImpl implements LotService {
+
+    private final Logger l = LoggerFactory.getLogger(LotServiceImpl.class);
 
     private final LotRepository lotRepository;
     private final ItemRepository itemRepository;
@@ -35,8 +36,8 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
-    public Lot findLotBySeller(User user) {
-        return lotRepository.findLotBySeller(user);
+    public Lot findLotByItemAndType(Item item, LotType lotType) {
+        return lotRepository.findLotByItemAndLotType(item, lotType);
     }
 
     @Override
@@ -65,39 +66,32 @@ public class LotServiceImpl implements LotService {
         return lotRepository.findAll();
     }
 
-    private void validateLot(Lot lot) {
+    private void validateLot(Lot lot, Long validity) {
+        if (!(lot.getLotType().equals(LotType.LOBBY) || lot.getLotType().equals(LotType.DYNAMIC)
+        || lot.getLotType().equals(LotType.STATIC))) {
+            throw new LotException("Invalid Lot Type");
+        }
+        if (validity <= 30) {
+            throw new LotException("Validity must be 30 minutes or higher");
+        }
         Iterable<Lot> allLots = findAllLots();
         for (Lot lotFromDb : allLots) {
             if (lotFromDb.getItem().equals(lot.getItem())) {
                 if (lotFromDb.getLotType().equals(lot.getLotType())) {
-                    throw new LotAlreadyExistsException("Lot already exists!");
+                    if (LotType.LOBBY.equals(lot.getLotType())) {
+                        throw new LobbyException("Lobby already exists!");
+                    }
+                    throw new LotException("Lot already exists!");
                 }
             }
         }
     }
 
     @Override
-    public Lot createLotByItemId(Long itemId, User user) {
-       Item itemFromDb = itemRepository.findItemById(itemId);
-       Lot lot = new Lot();
-        if (itemFromDb != null) {
-            if (itemFromDb.getUser()==user) {
-                lot.setItem(itemFromDb);
-                lot.setSeller(user);
-                lot.setPrice(itemFromDb.getPrice());
-                lot.setCreationTime(LocalDateTime.now());
-                validateLot(lot);
-                lotRepository.save(lot);
-            } else throw new InvalidItemException("You have selected invalid item");
-        } else throw new InvalidItemException("You have selected invalid item");
-        return lot;
-    }
-
-    @Override
-    public Lot createLot(Long itemId, LotType type, Long validity) {
+    public Lot createLot(Long itemId, LotType type, Long validity, String ownerEmail) {
         Item itemFromDb = itemRepository.findItemById(itemId);
         Lot lot = new Lot();
-        if (itemFromDb.getUser() != null) {
+        if (itemFromDb.getUser().getEmail().equals(ownerEmail)) {
             lot.setItem(itemFromDb);
             lot.setSeller(itemFromDb.getUser());
             lot.setPrice(itemFromDb.getPrice());
@@ -107,7 +101,9 @@ public class LotServiceImpl implements LotService {
                 lot.setLastCustomer(itemFromDb.getUser());
                 lot.setExpirationTime(lot.getCreationTime().plusMinutes(validity));
             }
-            validateLot(lot);
+            validateLot(lot, validity);
+            l.info("Lot#"+lotRepository.findLotByItemAndLotType(lot.getItem(), lot.getLotType()).getId()+
+                    " of "+lot.getLotType()+"type was created");
             return lotRepository.save(lot);
         } else throw new InvalidItemException("You have selected invalid item");
     }
@@ -116,6 +112,7 @@ public class LotServiceImpl implements LotService {
     public Lot updateLot(Lot lotFromDb, Double newPrice) {
         lotFromDb.setPrice(newPrice);
         lotFromDb.setCreationTime(LocalDateTime.now());
+        l.info("Lot#"+lotFromDb.getId()+" was updated");
         return lotRepository.save(lotFromDb);
     }
 
@@ -133,7 +130,9 @@ public class LotServiceImpl implements LotService {
         }
         lotFromDb.setPrice(bet);
         lotFromDb.setLastCustomer(customer);
-        return lotRepository.save(lotFromDb);
+        lotRepository.save(lotFromDb);
+        l.info("User "+customer.getEmail()+" placed "+bet+"on Lot#"+lotFromDb.getId());
+        return lotFromDb;
     }
 
     @Override
@@ -156,6 +155,7 @@ public class LotServiceImpl implements LotService {
         lotRepository.delete(lotToSell);
         lotClear(lotToSell);
         itemRepository.save(lotItem);
+        l.info("Item#"+lotItem.getId()+" was sold to "+customer.getEmail()+" with Lot#"+lotToSell.getId());
     }
 
     @Override
@@ -173,6 +173,7 @@ public class LotServiceImpl implements LotService {
                 }
             }
         } else throw new MoneyException("You have not enough money");
+        l.info("Item#"+lot.getItem().getId()+" was sold to "+customer.getEmail()+" with Lot#"+lot.getId());
         return customer;
     }
 

@@ -54,7 +54,7 @@ public class LobbyServiceImpl implements LobbyService {
     public Lobby createLobby(LobbyRequestDTO lobbyRequest) {
         Item itemToSell = itemService.findItemById(lobbyRequest.getItemId());
         User owner = itemToSell.getUser();
-        Lot lobbyLot = lotService.createLot(lobbyRequest.getItemId(), LotType.LOBBY, 2628000L);
+        Lot lobbyLot = lotService.createLot(lobbyRequest.getItemId(), LotType.LOBBY, 2628000L, owner.getEmail());
         Lobby lobby = new Lobby();
         lobby.setLot(lobbyLot);
         lobby.setOwner(owner);
@@ -154,8 +154,10 @@ public class LobbyServiceImpl implements LobbyService {
 
     @Override
     public void lobbyAutoSell(Lot lot) throws AutoSellException {
-        delete(lot.getSeller().getLobby());
+        Lobby lobby = lot.getSeller().getLobby();
+        delete(lobby);
         lotService.autoSell(lot);
+        l.info("Lobby#"+lobby.getId()+" successfully ended");
     }
 
     @PostConstruct

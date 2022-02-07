@@ -1,5 +1,6 @@
 package by.itstep.auction.service;
 
+import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.Lobby;
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.User;
@@ -9,7 +10,8 @@ import by.itstep.auction.service.exceptions.AutoSellException;
 import java.util.Optional;
 
 public interface LotService {
-    Lot findLotBySeller(User user);
+
+    Lot findLotByItemAndType(Item item, LotType lotType);
 
     Optional<Lot> findLotById(Long id);
 
@@ -21,9 +23,7 @@ public interface LotService {
 
     Iterable<Lot> findAllLots();
 
-    Lot createLotByItemId(Long itemId, User user);
-
-    Lot createLot(Long itemId, LotType type, Long validity);
+    Lot createLot(Long itemId, LotType type, Long validity, String ownerEmail);
 
     Lot updateLot(Lot lotFromDb, Double newPrice);
 
