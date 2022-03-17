@@ -1,10 +1,8 @@
 package by.itstep.auction.dao.model;
 
 import by.itstep.auction.dao.model.enums.LobbyStatus;
-import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "lobby")

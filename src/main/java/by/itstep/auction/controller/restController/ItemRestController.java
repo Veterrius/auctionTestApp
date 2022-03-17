@@ -1,6 +1,7 @@
 package by.itstep.auction.controller.restController;
 
 import by.itstep.auction.dao.model.Item;
+import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.impl.ItemServiceImpl;
 import by.itstep.auction.service.impl.UserServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +30,7 @@ public class ItemRestController {
     @GetMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('items:read')")
     public Item getOne(@PathVariable Long id) {
-        return itemService.findItemById(id);
+        return itemService.findItemById(id).orElseThrow(()->new InvalidItemException("You have selected invalid item"));
     }
 
     @PostMapping

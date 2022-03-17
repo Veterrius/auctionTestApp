@@ -20,7 +20,7 @@ public class LotAutoSellerThread extends Thread{
 
     @Override
     public void run() {
-        while (true) {
+        while (isAlive()) {
             List<Lot> lots = (List<Lot>) lotService.findAllLots();
             for (Lot lot : lots) {
                 if (LotType.DYNAMIC.equals(lot.getLotType())) {

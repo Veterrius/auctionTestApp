@@ -36,11 +36,6 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
-    public Lot findLotByItemAndType(Item item, LotType lotType) {
-        return lotRepository.findLotByItemAndLotType(item, lotType);
-    }
-
-    @Override
     public Optional<Lot> findLotById(Long id) {
         return lotRepository.findLotById(id);
     }
@@ -67,11 +62,7 @@ public class LotServiceImpl implements LotService {
     }
 
     private void validateLot(Lot lot, Long validity) {
-        if (!(lot.getLotType().equals(LotType.LOBBY) || lot.getLotType().equals(LotType.DYNAMIC)
-        || lot.getLotType().equals(LotType.STATIC))) {
-            throw new LotException("Invalid Lot Type");
-        }
-        if (validity <= 30) {
+        if (validity < 30) {
             throw new LotException("Validity must be 30 minutes or higher");
         }
         Iterable<Lot> allLots = findAllLots();
@@ -89,7 +80,7 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public Lot createLot(Long itemId, LotType type, Long validity, String ownerEmail) {
-        Item itemFromDb = itemRepository.findItemById(itemId);
+        Item itemFromDb = itemRepository.findItemById(itemId).orElseThrow(()->new InvalidItemException("Tou have selected invalid item"));
         Lot lot = new Lot();
         if (itemFromDb.getUser().getEmail().equals(ownerEmail)) {
             lot.setItem(itemFromDb);
@@ -102,9 +93,10 @@ public class LotServiceImpl implements LotService {
                 lot.setExpirationTime(lot.getCreationTime().plusMinutes(validity));
             }
             validateLot(lot, validity);
+            lotRepository.save(lot);
             l.info("Lot#"+lotRepository.findLotByItemAndLotType(lot.getItem(), lot.getLotType()).getId()+
-                    " of "+lot.getLotType()+"type was created");
-            return lotRepository.save(lot);
+                    " of "+lot.getLotType()+" type was created");
+            return lot;
         } else throw new InvalidItemException("You have selected invalid item");
     }
 
@@ -117,13 +109,13 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
-    public Lot placeNewBet(Lot lotFromDb, Double bet, String userName) {
-        User customer = userService.findByEmail(userName).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-        if (lotFromDb.getPrice() >= bet) {
-            throw new MoneyException("Bet must be higher than previous");
+    public Lot placeNewBet(Lot lotFromDb, Double bet, String email) {
+        User customer = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        if (lotFromDb.getPrice() >= bet || bet > customer.getMoney()) {
+            throw new MoneyException("Bet must be higher than previous and can't be higher than your current balance");
         }
-        if (customer.equals(lotFromDb.getItem().getUser())) {
-            throw new MoneyException("You cannot place bet on your own lot");
+        if (customer.equals(lotFromDb.getSeller())) {
+            throw new LotException("You cannot place bet on your own lot");
         }
         if (lotFromDb.getLotType().equals(LotType.LOBBY)) {
             lotFromDb.setExpirationTime(lotFromDb.getExpirationTime().plusMinutes(1));
@@ -131,7 +123,7 @@ public class LotServiceImpl implements LotService {
         lotFromDb.setPrice(bet);
         lotFromDb.setLastCustomer(customer);
         lotRepository.save(lotFromDb);
-        l.info("User "+customer.getEmail()+" placed "+bet+"on Lot#"+lotFromDb.getId());
+        l.info("User "+customer.getEmail()+" placed "+bet+" on Lot#"+lotFromDb.getId());
         return lotFromDb;
     }
 
@@ -162,7 +154,7 @@ public class LotServiceImpl implements LotService {
     public User purchase(User customer, Lot lot) {
         User seller = lot.getSeller();
         if (customer.getMoney() >= lot.getPrice()) {
-            Item itemToBuy = itemRepository.findItemById(lot.getItem().getId());
+            Item itemToBuy = lot.getItem();
             if (!customer.getId().equals(seller.getId())) {
                 if (itemToBuy.getUser() == seller) {
                     userService.updateMoney(customer, lot.getPrice(), false);
@@ -171,7 +163,7 @@ public class LotServiceImpl implements LotService {
                     lotRepository.delete(lot);
                     lotClear(lot);
                 }
-            }
+            } else throw new LotException("You cannot buy your own lot");
         } else throw new MoneyException("You have not enough money");
         l.info("Item#"+lot.getItem().getId()+" was sold to "+customer.getEmail()+" with Lot#"+lot.getId());
         return customer;

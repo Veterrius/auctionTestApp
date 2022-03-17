@@ -24,44 +24,4 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         l.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
-
-//    @ExceptionHandler(InvalidItemException.class)
-//    public ResponseEntity<?> handleInvalidItemException(InvalidItemException ex) {
-//        Map<Object, Object> body = new HashMap<>();
-//        body.put("message", ex.getMessage());
-//        l.error(ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
-//    }
-//
-//    @ExceptionHandler(MoneyException.class)
-//    public ResponseEntity<?> handleNotEnoughMoneyException(MoneyException ex) {
-//        Map<Object, Object> body = new HashMap<>();
-//        body.put("message", ex.getMessage());
-//        l.error(ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-//    }
-//
-//    @ExceptionHandler(LotAlreadyExistsException.class)
-//    public ResponseEntity<?> handleInvalidItemException(LotAlreadyExistsException ex) {
-//        Map<Object, Object> body = new HashMap<>();
-//        body.put("message", ex.getMessage());
-//        l.error(ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-//    }
-//
-//    @ExceptionHandler(JwtAuthenticationException.class)
-//    public ResponseEntity<?> handleJwtAuthenticationException(JwtAuthenticationException ex) {
-//        Map<Object, Object> body = new HashMap<>();
-//        body.put("message", ex.getMessage());
-//        l.error(ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-//    }
-//
-//    @ExceptionHandler(LobbyException.class)
-//    public ResponseEntity<?> handleLobbyException(LobbyException ex) {
-//        Map<Object, Object> body = new HashMap<>();
-//        body.put("message", ex.getMessage());
-//        l.error(ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-//    }
 }

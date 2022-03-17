@@ -1,17 +1,11 @@
 package by.itstep.auction.dao.model;
 
-//import by.itstep.auction.dao.model.enums.Role;
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.userdetails.UserDetails;
-
 import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-
-import static by.itstep.auction.dao.model.enums.Status.ACTIVE;
 
 @Table(name = "user")
 @Entity

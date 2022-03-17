@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ItemServiceImpl implements ItemService {
 
@@ -18,11 +20,6 @@ public class ItemServiceImpl implements ItemService {
 
     public ItemServiceImpl(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
-    }
-
-    @Override
-    public Item findItemByName(String name) {
-        return itemRepository.findItemByName(name);
     }
 
     @Override
@@ -40,28 +37,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Iterable<Item> findAllItems() {
-        return itemRepository.findAll();
-    }
-
-    @Override
-    public Iterable<Item> findItemsOfUser(User user) {
-        return itemRepository.findItemsByUser(user);
-    }
-
-    @Override
     public Iterable<Item> getAll() {
         return itemRepository.findAll();
     }
 
     @Override
-    public Item findItemById(Long id) {
+    public Optional<Item> findItemById(Long id) {
        return itemRepository.findItemById(id);
-    }
-
-    @Override
-    public Item createItemWithoutUser(Item item) {
-        return itemRepository.save(item);
     }
 
     @Override

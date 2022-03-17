@@ -3,8 +3,6 @@ package by.itstep.auction.controller.restController;
 import by.itstep.auction.dao.model.Lobby;
 import by.itstep.auction.dao.model.dto.LobbyRequestDTO;
 import by.itstep.auction.service.LobbyService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

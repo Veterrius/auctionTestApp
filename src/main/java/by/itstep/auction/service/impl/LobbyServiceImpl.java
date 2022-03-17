@@ -10,6 +10,7 @@ import by.itstep.auction.dao.model.enums.LotType;
 import by.itstep.auction.dao.repository.LobbyRepository;
 import by.itstep.auction.service.*;
 import by.itstep.auction.service.exceptions.AutoSellException;
+import by.itstep.auction.service.exceptions.InvalidItemException;
 import by.itstep.auction.service.exceptions.LobbyException;
 import by.itstep.auction.service.threads.LobbyAutoSellerThread;
 import org.slf4j.Logger;
@@ -52,8 +53,11 @@ public class LobbyServiceImpl implements LobbyService {
 
     @Override
     public Lobby createLobby(LobbyRequestDTO lobbyRequest) {
-        Item itemToSell = itemService.findItemById(lobbyRequest.getItemId());
+        Item itemToSell = itemService.findItemById(lobbyRequest.getItemId()).orElseThrow(()->new InvalidItemException("You have selected invalid item"));
         User owner = itemToSell.getUser();
+        if (hasLobby(owner)) {
+            throw new LobbyException("You already have a lobby");
+        }
         Lot lobbyLot = lotService.createLot(lobbyRequest.getItemId(), LotType.LOBBY, 2628000L, owner.getEmail());
         Lobby lobby = new Lobby();
         lobby.setLot(lobbyLot);
@@ -140,7 +144,7 @@ public class LobbyServiceImpl implements LobbyService {
             throw new LobbyException("Lobby is not started yet");
         }
         lotService.placeNewBet(lobby.getLot(), bet, principal.getName());
-        l.info(principal.getName()+" placed "+ bet + " in Lobby#"+ lobby.getId());
+        l.info(principal.getName()+" placed bet in Lobby#"+ lobby.getId());
         return lobby;
     }
 
@@ -158,6 +162,10 @@ public class LobbyServiceImpl implements LobbyService {
         delete(lobby);
         lotService.autoSell(lot);
         l.info("Lobby#"+lobby.getId()+" successfully ended");
+    }
+
+    private boolean hasLobby(User user) {
+        return lobbyRepository.findByOwner(user).isPresent();
     }
 
     @PostConstruct

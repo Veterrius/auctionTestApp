@@ -11,8 +11,6 @@ import java.util.Optional;
 
 public interface LotService {
 
-    Lot findLotByItemAndType(Item item, LotType lotType);
-
     Optional<Lot> findLotById(Long id);
 
     Lot createLot(Lot lot);

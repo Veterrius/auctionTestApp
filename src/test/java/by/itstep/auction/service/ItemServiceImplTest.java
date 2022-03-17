@@ -26,7 +26,7 @@ public class ItemServiceImplTest {
     @Test
     public void getByIdTest_Success() {
         Item validItem = new Item();
-        Mockito.when(itemRepository.findItemById(1L)).thenReturn(validItem);
+        Mockito.when(itemRepository.findItemById(1L)).thenReturn(Optional.of(validItem));
         itemService.findItemById(1L);
     }
 

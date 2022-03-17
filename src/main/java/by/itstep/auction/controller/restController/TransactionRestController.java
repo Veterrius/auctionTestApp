@@ -26,4 +26,10 @@ public class TransactionRestController {
         return lotService.purchase(userService.findByEmail(principal.getName()).orElseThrow(),
                 lotService.findLotById(id).orElseThrow());
     }
+
+    @PostMapping("/m")
+    @PreAuthorize(value = "hasAuthority('users:money')")
+    public User updateMoney(Principal principal, @RequestBody Double money){
+        return userService.updateMoney(userService.findByEmail(principal.getName()).orElseThrow(), money, true);
+    }
 }

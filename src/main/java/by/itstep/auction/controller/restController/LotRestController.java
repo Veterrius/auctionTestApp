@@ -3,7 +3,6 @@ package by.itstep.auction.controller.restController;
 import by.itstep.auction.dao.model.Lot;
 import by.itstep.auction.dao.model.dto.LotRequestDTO;
 import by.itstep.auction.service.impl.LotServiceImpl;
-import by.itstep.auction.service.impl.UserServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

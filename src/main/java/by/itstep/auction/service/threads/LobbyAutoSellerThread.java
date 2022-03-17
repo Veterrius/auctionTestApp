@@ -23,7 +23,7 @@ public class LobbyAutoSellerThread extends Thread{
 
     @Override
     public void run() {
-        while (true) {
+        while (isAlive()) {
             List<Lot> lots = (List<Lot>) lotService.findAllLots();
             for (Lot lot : lots) {
                 if (LotType.LOBBY.equals(lot.getLotType())) {

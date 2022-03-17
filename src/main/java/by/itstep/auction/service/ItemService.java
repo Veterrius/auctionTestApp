@@ -3,20 +3,15 @@ package by.itstep.auction.service;
 import by.itstep.auction.dao.model.Item;
 import by.itstep.auction.dao.model.User;
 
+import java.util.Optional;
+
 public interface ItemService {
-    Item findItemByName(String name);
 
     Item createItem(Item item, User user);
 
-    Iterable<Item> findAllItems();
-
-    Iterable<Item> findItemsOfUser(User user);
-
     Iterable<Item> getAll();
 
-    Item findItemById(Long id);
-
-    Item createItemWithoutUser(Item item);
+    Optional<Item> findItemById(Long id);
 
     Item updateItem(Item itemToUpdate, Item updatedItem);
 

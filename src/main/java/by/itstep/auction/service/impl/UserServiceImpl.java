@@ -6,6 +6,7 @@ import by.itstep.auction.dao.model.enums.Role;
 import by.itstep.auction.dao.model.enums.Status;
 import by.itstep.auction.dao.repository.UserRepository;
 import by.itstep.auction.service.UserService;
+import by.itstep.auction.service.exceptions.MoneyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,13 +38,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User userFromDb, User updatedUser) {
-        userFromDb.setMoney(updatedUser.getMoney());
-        return userRepository.save(userFromDb);
-    }
-
-    @Override
     public User updateMoney(User user, Double money, Boolean isAdded) {
+        if (money <= 0) {
+            throw new MoneyException("Invalid amount of money");
+        }
         if (isAdded) {
             user.setMoney(user.getMoney() + money);
         } else {
@@ -55,23 +53,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public Iterable<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public void deleteUser(User user) {
-        userRepository.delete(user);
     }
 
     @Override
